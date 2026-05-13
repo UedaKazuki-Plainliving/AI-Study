@@ -9,7 +9,7 @@
     body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #eef2f7; min-height: 100vh; color: #333; }
 
     .top-bar {
-      background: #2d3748; color: #fff;
+      background: #1a3a5c; color: #fff;
       padding: 0 24px; height: 56px;
       display: flex; align-items: center; justify-content: space-between;
     }
@@ -187,8 +187,8 @@
 </div>
 
 <script>
-  const RE_USERID   = /^[a-zA-Z0-9]{1,20}$/;
-  const RE_PASSWORD = /^[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{8,32}$/;
+  const RE_USERID_CHARSET   = /^[a-zA-Z0-9]+$/;
+  const RE_PASSWORD_CHARSET = /^[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+$/;
 
   // ---- ユーザー一覧 ----
   async function loadUsers() {
@@ -256,13 +256,25 @@
     const password = document.getElementById('add-password').value;
 
     let valid = true;
-    if (!RE_USERID.test(userId)) {
-      showFieldError('err-add-userid', 'ユーザーIDは半角英数字1〜20文字で入力してください');
+    if (!userId) {
+      showFieldError('err-add-userid', 'ユーザーIDを入力してください');
+      valid = false;
+    } else if (!RE_USERID_CHARSET.test(userId)) {
+      showFieldError('err-add-userid', 'ユーザーIDは半角英数字で入力してください');
+      valid = false;
+    } else if (userId.length > 20) {
+      showFieldError('err-add-userid', 'ユーザーIDは1〜20文字で入力してください');
       valid = false;
     } else { clearFieldError('err-add-userid'); }
 
-    if (!RE_PASSWORD.test(password)) {
-      showFieldError('err-add-password', 'パスワードは半角英数記号8〜32文字で入力してください');
+    if (!password) {
+      showFieldError('err-add-password', 'パスワードを入力してください');
+      valid = false;
+    } else if (!RE_PASSWORD_CHARSET.test(password)) {
+      showFieldError('err-add-password', 'パスワードは半角英数記号で入力してください');
+      valid = false;
+    } else if (password.length < 8 || password.length > 32) {
+      showFieldError('err-add-password', 'パスワードは8〜32文字で入力してください');
       valid = false;
     } else { clearFieldError('err-add-password'); }
     if (!valid) return;
@@ -296,9 +308,10 @@
       });
       const json = await res.json();
       if (json.status !== 'success') throw new Error(json.error?.message);
+      showAlert('list-alert-success', `✅ ユーザー「${userId}」をロックしました`);
       loadUsers();
     } catch (err) {
-      alert('エラー: ' + err.message);
+      showAlert('list-alert-error', '❌ ' + err.message);
     }
   }
 
@@ -330,9 +343,10 @@
       });
       const json = await res.json();
       if (json.status !== 'success') throw new Error(json.error?.message);
+      showAlert('list-alert-success', `✅ ユーザー「${userId}」のロックを解除しました`);
       loadUsers();
     } catch (err) {
-      alert('エラー: ' + err.message);
+      showAlert('list-alert-error', '❌ ' + err.message);
     }
   }
 
@@ -348,9 +362,10 @@
       });
       const json = await res.json();
       if (json.status !== 'success') throw new Error(json.error?.message);
+      showAlert('list-alert-success', `✅ ユーザー「${userId}」を${label}しました`);
       loadUsers();
     } catch (err) {
-      alert('エラー: ' + err.message);
+      showAlert('list-alert-error', '❌ ' + err.message);
     }
   }
 
@@ -361,9 +376,10 @@
       const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
       const json = await res.json();
       if (json.status !== 'success') throw new Error(json.error?.message);
+      showAlert('list-alert-success', `✅ ユーザー「${userId}」を削除しました`);
       loadUsers();
     } catch (err) {
-      alert('エラー: ' + err.message);
+      showAlert('list-alert-error', '❌ ' + err.message);
     }
   }
 
@@ -382,8 +398,16 @@
   }
   async function submitResetPassword() {
     const password = document.getElementById('pw-modal-input').value;
-    if (!RE_PASSWORD.test(password)) {
-      showFieldError('err-pw-modal', 'パスワードは半角英数記号8〜32文字で入力してください');
+    if (!password) {
+      showFieldError('err-pw-modal', 'パスワードを入力してください');
+      return;
+    }
+    if (!RE_PASSWORD_CHARSET.test(password)) {
+      showFieldError('err-pw-modal', 'パスワードは半角英数記号で入力してください');
+      return;
+    }
+    if (password.length < 8 || password.length > 32) {
+      showFieldError('err-pw-modal', 'パスワードは8〜32文字で入力してください');
       return;
     }
     clearFieldError('err-pw-modal');
