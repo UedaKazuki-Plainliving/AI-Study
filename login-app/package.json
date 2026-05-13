@@ -7,7 +7,10 @@
     "start": "node server.js",
     "init-db": "node init-db.js",
     "test": "playwright test",
-    "test:report": "playwright test --reporter=html && playwright show-report test-report"
+    "test:api": "playwright test --project=api",
+    "test:e2e": "playwright test --project=browser",
+    "test:unit": "jest tests/unit",
+    "test:report": "playwright show-report test-report"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -19,6 +22,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.60.0"
+    "@playwright/test": "^1.60.0",
+    "jest": "^30.4.2"
   }
 }

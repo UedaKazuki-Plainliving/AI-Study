@@ -1,4 +1,4 @@
-const { defineConfig } = require('@playwright/test');
+const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -11,5 +11,16 @@ module.exports = defineConfig({
   reporter: [
     ['list'],
     ['html', { open: 'never', outputFolder: 'test-report' }],
+  ],
+  projects: [
+    {
+      name: 'api',
+      testMatch: /auth\.spec\.js|users\.spec\.js/,
+    },
+    {
+      name: 'browser',
+      testMatch: /e2e\/.+\.spec\.js/,
+      use: { ...devices['Desktop Chrome'] },
+    },
   ],
 });

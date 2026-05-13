@@ -1,0 +1,13 @@
+機能ID,機能名,説明,対象画面,関連API,利用ペルソナ,業務重要度,リスクスコア（頻度×影響）
+F-01,ログイン,ID/PWによるセッション認証,index.html,POST /api/auth/login,P-01 / P-02,最高,25（5×5）
+F-02,フロントエンドバリデーション,"ID/PW の必須・文字種・長さチェック（3ステップ）",index.html,—,P-01,高,12（3×4）
+F-03,アカウントロック,5回連続失敗でアカウントをロック（30分自動解除）,server.js,POST /api/auth/login,P-01 / P-02,高,15（3×5）
+F-04,パスワード期限切れ遷移,90日超過のPWで変更画面へ誘導,index.html,POST /api/auth/login,P-01,高,12（3×4）
+F-05,パスワード変更（自己）,期限切れ時に自分でPWを変更する,index.html,POST /api/auth/change-password,P-01,高,12（3×4）
+F-06,ログアウト,セッション破棄・ログイン画面へ戻りフォームクリア,index.html,POST /api/auth/logout,P-01,高,15（5×3）
+F-07,ユーザー追加,管理者による新規アカウント作成,admin.html,POST /api/users,P-02,高,8（2×4）
+F-08,ユーザー一覧表示,全ユーザーの状態・詳細を一覧で確認,admin.html,GET /api/users,P-02,中,6（3×2）
+F-09,手動ロック / ロック解除,管理者によるアカウントのロック操作,admin.html,PUT /api/users/:id,P-02,高,10（2×5）
+F-10,アカウント有効 / 無効化,管理者による有効状態の切り替え,admin.html,PUT /api/users/:id,P-02,高,8（2×4）
+F-11,ユーザー削除,管理者によるアカウント完全削除,admin.html,DELETE /api/users/:id,P-02,中,4（1×4）
+F-12,パスワードリセット（管理者）,"管理者からのPW強制変更・PW変更要求フラグセット",admin.html,PUT /api/users/:id,P-02,中,6（2×3）
