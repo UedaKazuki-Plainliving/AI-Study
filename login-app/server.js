@@ -3,6 +3,9 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+const yaml = require('js-yaml');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +23,10 @@ const pool = new Pool({
   port:     parseInt(process.env.DB_PORT || '5432'),
   ssl:      process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
+
+// ---- Swagger UI ----
+const swaggerDoc = yaml.load(fs.readFileSync(path.join(__dirname, 'docs', 'openapi.yaml'), 'utf8'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc, { customSiteTitle: '社内Webシステム API仕様書' }));
 
 // ---- ミドルウェア ----
 app.use(express.json());

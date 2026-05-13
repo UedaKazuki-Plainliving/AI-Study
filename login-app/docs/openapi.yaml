@@ -1,0 +1,668 @@
+openapi: 3.0.3
+
+info:
+  title: 社内Webシステム API
+  description: |
+    社内Webシステムのログイン・認証・ユーザー管理API。
+
+    ## 認証方式
+    認証は **express-session によるセッションCookie方式** を採用。
+    `/api/auth/login` 成功後に `connect.sid` Cookieが発行され、以降のリクエストで自動送信される。
+
+    ## パスワードポリシー
+    - 有効期限: 90日
+    - 連続失敗ロック: 5回失敗で30分間ロック
+  version: "1.0"
+
+servers:
+  - url: http://43.207.67.234:3000/api
+    description: 開発環境（AWS EC2）
+  - url: http://localhost:3000/api
+    description: ローカル環境
+
+tags:
+  - name: auth
+    description: 認証・セッション管理
+  - name: users
+    description: ユーザー管理（管理者向け）
+
+# ========================================================
+# Paths
+# ========================================================
+paths:
+
+  # ---- POST /auth/login --------------------------------
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: ログイン
+      description: |
+        ユーザーIDとパスワードで認証し、セッションを開始する。
+
+        **処理フロー**
+        1. バリデーション
+        2. ユーザー存在チェック（存在しない場合は401で統一）
+        3. アカウントロックチェック
+        4. パスワード照合（失敗時は失敗回数インクリメント）
+        5. パスワード期限チェック
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId, password]
+              properties:
+                userId:
+                  type: string
+                  minLength: 1
+                  maxLength: 20
+                  pattern: '^[a-zA-Z0-9]+$'
+                  description: 半角英数字 1〜20文字
+                  example: user001
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 32
+                  description: 半角英数記号 8〜32文字
+                  example: P@ssword
+      responses:
+        '200':
+          description: 認証成功。セッションCookieが発行される。
+          headers:
+            Set-Cookie:
+              description: セッションCookie（connect.sid）
+              schema:
+                type: string
+                example: connect.sid=s%3A...; Path=/; HttpOnly
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                            example: user001
+                          expiresAt:
+                            type: string
+                            format: date-time
+                            description: セッション有効期限（ログインから8時間後）
+                            example: '2026-05-13T18:00:00.000Z'
+        '401':
+          description: 認証失敗（ユーザーID/パスワード不一致、またはユーザー無効）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                auth_failed_with_remaining:
+                  summary: 認証失敗（残り試行回数あり）
+                  value:
+                    status: error
+                    error:
+                      code: AUTH_FAILED
+                      message: ユーザーIDまたはパスワードが正しくありません
+                      remainingAttempts: 3
+                auth_failed_no_remaining:
+                  summary: 認証失敗（残り回数なし or ユーザー無効）
+                  value:
+                    status: error
+                    error:
+                      code: AUTH_FAILED
+                      message: ユーザーIDまたはパスワードが正しくありません
+                      remainingAttempts: null
+        '403':
+          description: アカウントロック中
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                auto_locked:
+                  summary: 連続失敗によるロック（ロック直後）
+                  value:
+                    status: error
+                    error:
+                      code: ACCOUNT_LOCKED
+                      message: ログインに連続5回失敗したため、アカウントをロックしました。30分後に自動解除されます。
+                      lockedUntil: '2026-05-13T10:30:00.000Z'
+                already_locked:
+                  summary: ロック中に再アクセス
+                  value:
+                    status: error
+                    error:
+                      code: ACCOUNT_LOCKED
+                      message: アカウントがロックされています
+                      lockedUntil: '2026-05-13T10:30:00.000Z'
+        '422':
+          description: |
+            パスワード期限切れ。
+            セッションは開始されるが `requiresPasswordChange=true` の状態となり、
+            `/api/auth/change-password` の呼び出しのみ許可される。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              example:
+                status: error
+                error:
+                  code: PASSWORD_EXPIRED
+                  message: パスワードの有効期限が切れています
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ---- POST /auth/logout -------------------------------
+  /auth/logout:
+    post:
+      tags: [auth]
+      summary: ログアウト
+      description: セッションを破棄してログアウトする。
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: ログアウト成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: ログアウトしました
+
+  # ---- POST /auth/change-password ----------------------
+  /auth/change-password:
+    post:
+      tags: [auth]
+      summary: パスワード変更
+      description: |
+        パスワードを変更する。
+
+        **呼び出し条件**: `/api/auth/login` で `422 PASSWORD_EXPIRED` が返った後の同セッション内でのみ呼び出し可能。
+        通常ログイン済みセッション（requiresPasswordChange=false）からは呼び出し不可（401）。
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [newPassword]
+              properties:
+                newPassword:
+                  type: string
+                  minLength: 8
+                  maxLength: 32
+                  description: 半角英数記号 8〜32文字
+                  example: NewP@ssword1
+      responses:
+        '200':
+          description: パスワード変更成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: パスワードを変更しました
+                          passwordChangedAt:
+                            type: string
+                            format: date-time
+                            example: '2026-05-13T10:05:00.000Z'
+        '400':
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              example:
+                status: error
+                error:
+                  code: VALIDATION_ERROR
+                  message: 新しいパスワードを入力してください
+        '401':
+          description: セッション未開始またはパスワード変更権限なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              example:
+                status: error
+                error:
+                  code: UNAUTHORIZED
+                  message: パスワード変更の権限がありません
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ---- GET /auth/status --------------------------------
+  /auth/status:
+    get:
+      tags: [auth]
+      summary: セッション状態確認
+      description: 現在のセッションの有効性とパスワード有効期限を返す。
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: セッション有効
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                            example: user001
+                          sessionValid:
+                            type: boolean
+                            example: true
+                          expiresAt:
+                            type: string
+                            format: date-time
+                            description: セッション有効期限
+                          passwordExpiresAt:
+                            type: string
+                            format: date-time
+                            description: パスワード有効期限（最終変更日 + 90日）
+        '401':
+          description: 未認証またはセッション期限切れ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                unauthorized:
+                  summary: 未認証
+                  value:
+                    status: error
+                    error:
+                      code: UNAUTHORIZED
+                      message: 認証が必要です
+                session_expired:
+                  summary: セッション期限切れ
+                  value:
+                    status: error
+                    error:
+                      code: SESSION_EXPIRED
+                      message: セッションが無効です
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ---- GET /users --------------------------------------
+  /users:
+    get:
+      tags: [users]
+      summary: ユーザー一覧取得
+      description: 全ユーザーの情報を登録日昇順で返す。
+      responses:
+        '200':
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    # ---- POST /users -----------------------------------
+    post:
+      tags: [users]
+      summary: ユーザー作成
+      description: 新規ユーザーを作成する。パスワードはbcryptでハッシュ化して保存される。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId, password]
+              properties:
+                userId:
+                  type: string
+                  minLength: 1
+                  maxLength: 20
+                  pattern: '^[a-zA-Z0-9]+$'
+                  description: 半角英数字 1〜20文字（一意）
+                  example: user002
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 32
+                  description: 半角英数記号 8〜32文字
+                  example: P@ssword2
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/User'
+        '400':
+          description: バリデーションエラーまたはユーザーID重複
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                validation_error:
+                  summary: バリデーションエラー
+                  value:
+                    status: error
+                    error:
+                      code: VALIDATION_ERROR
+                      message: 入力値に誤りがあります
+                      fields:
+                        userId: ユーザーIDは半角英数字1〜20文字で入力してください
+                        password: パスワードは半角英数記号8〜32文字で入力してください
+                duplicate_user:
+                  summary: ユーザーID重複
+                  value:
+                    status: error
+                    error:
+                      code: DUPLICATE_USER
+                      message: そのユーザーIDはすでに使用されています
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ---- PUT/DELETE /users/{userId} ----------------------
+  /users/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        description: 操作対象のユーザーID
+        schema:
+          type: string
+        example: user001
+
+    put:
+      tags: [users]
+      summary: ユーザー更新
+      description: |
+        ユーザー情報を更新する。リクエストボディに含めたフィールドのみ更新される（複数同時指定可）。
+
+        | フィールド | 動作 |
+        |---|---|
+        | `password` | パスワードをbcryptで再ハッシュ化して保存 |
+        | `isActive` | アカウントの有効/無効を切替 |
+        | `resetLock` | `true` でロック解除・失敗回数リセット |
+        | `lock` | `true` で手動ロック（`locked_until` を9999年に設定） |
+        | `forcePasswordChange` | `true` でパスワード有効期限を強制的に切れにする（次回ログイン時にパスワード変更を要求） |
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+              properties:
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 32
+                  description: 新しいパスワード（半角英数記号 8〜32文字）
+                isActive:
+                  type: boolean
+                  description: アカウント有効フラグ
+                resetLock:
+                  type: boolean
+                  description: trueを指定するとロック解除・失敗回数リセット
+                lock:
+                  type: boolean
+                  description: trueを指定すると手動ロック（永続ロック）
+                forcePasswordChange:
+                  type: boolean
+                  description: trueを指定するとパスワード期限を強制的に切れにする
+            examples:
+              reset_lock:
+                summary: ロック解除
+                value:
+                  resetLock: true
+              manual_lock:
+                summary: 手動ロック
+                value:
+                  lock: true
+              force_pw_change:
+                summary: パスワード変更要求
+                value:
+                  forcePasswordChange: true
+              change_password:
+                summary: パスワードリセット
+                value:
+                  password: NewP@ssword1
+              deactivate:
+                summary: 無効化
+                value:
+                  isActive: false
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/User'
+        '400':
+          description: バリデーションエラーまたは更新項目なし
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                no_update:
+                  summary: 更新項目なし
+                  value:
+                    status: error
+                    error:
+                      code: NO_UPDATE
+                      message: 更新する項目がありません
+                validation_error:
+                  summary: パスワードバリデーションエラー
+                  value:
+                    status: error
+                    error:
+                      code: VALIDATION_ERROR
+                      message: パスワードは半角英数記号8〜32文字で入力してください
+        '404':
+          description: ユーザーが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              example:
+                status: error
+                error:
+                  code: NOT_FOUND
+                  message: ユーザーが見つかりません
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags: [users]
+      summary: ユーザー削除
+      description: |
+        ユーザーを物理削除する。
+        `login_histories` テーブルの関連レコードは CASCADE により自動削除される。
+      responses:
+        '200':
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: ユーザー user001 を削除しました
+        '404':
+          description: ユーザーが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              example:
+                status: error
+                error:
+                  code: NOT_FOUND
+                  message: ユーザーが見つかりません
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+# ========================================================
+# Components
+# ========================================================
+components:
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid
+      description: express-session が発行するセッションCookie
+
+  schemas:
+
+    SuccessEnvelope:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+          example: success
+
+    ErrorEnvelope:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+          example: error
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: エラーコード
+              example: AUTH_FAILED
+              enum:
+                - VALIDATION_ERROR
+                - AUTH_FAILED
+                - ACCOUNT_LOCKED
+                - PASSWORD_EXPIRED
+                - UNAUTHORIZED
+                - SESSION_EXPIRED
+                - DUPLICATE_USER
+                - NOT_FOUND
+                - NO_UPDATE
+                - INTERNAL_ERROR
+            message:
+              type: string
+              description: エラーメッセージ（日本語）
+              example: ユーザーIDまたはパスワードが正しくありません
+            fields:
+              type: object
+              additionalProperties:
+                type: string
+              description: バリデーションエラー時のフィールド別メッセージ
+              example:
+                userId: ユーザーIDは半角英数字で入力してください
+            remainingAttempts:
+              type: integer
+              nullable: true
+              description: 認証失敗時の残り試行可能回数（AUTH_FAILED 時のみ）
+              example: 3
+            lockedUntil:
+              type: string
+              format: date-time
+              nullable: true
+              description: アカウントロック解除日時（ACCOUNT_LOCKED 時のみ）
+              example: '2026-05-13T10:30:00.000Z'
+
+    User:
+      type: object
+      description: ユーザー情報
+      properties:
+        user_id:
+          type: string
+          example: user001
+        password_changed_at:
+          type: string
+          format: date-time
+          description: パスワード最終変更日時
+        failed_login_count:
+          type: integer
+          minimum: 0
+          example: 0
+          description: 連続ログイン失敗回数
+        locked_until:
+          type: string
+          format: date-time
+          nullable: true
+          description: ロック解除日時（未ロックの場合は null）
+        is_active:
+          type: boolean
+          example: true
+          description: アカウント有効フラグ
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+  responses:
+    InternalError:
+      description: サーバー内部エラー
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+          example:
+            status: error
+            error:
+              code: INTERNAL_ERROR
+              message: サーバーエラーが発生しました
