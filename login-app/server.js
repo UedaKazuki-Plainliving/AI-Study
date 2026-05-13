@@ -254,7 +254,7 @@ app.post('/api/users', async (req, res) => {
 // PUT /api/users/:userId
 app.put('/api/users/:userId', async (req, res) => {
   const { userId } = req.params;
-  const { password, isActive, resetLock } = req.body || {};
+  const { password, isActive, resetLock, lock, forcePasswordChange } = req.body || {};
 
   try {
     const exists = await pool.query('SELECT 1 FROM users WHERE user_id = $1', [userId]);
@@ -283,6 +283,15 @@ app.put('/api/users/:userId', async (req, res) => {
     if (resetLock) {
       updates.push(`failed_login_count = 0`);
       updates.push(`locked_until = NULL`);
+    }
+
+    if (lock) {
+      updates.push(`locked_until = '9999-12-31 00:00:00+00'`);
+      updates.push(`failed_login_count = ${MAX_FAIL}`);
+    }
+
+    if (forcePasswordChange) {
+      updates.push(`password_changed_at = NOW() - interval '91 days'`);
     }
 
     if (updates.length === 0) {

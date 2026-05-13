@@ -143,7 +143,8 @@
       <button class="btn btn-gray btn-sm" onclick="loadUsers()">更新</button>
     </div>
     <div class="card-body" style="padding:0">
-      <div id="list-alert-error" class="alert alert-error" style="margin:16px"></div>
+      <div id="list-alert-success" class="alert alert-success" style="margin:16px"></div>
+      <div id="list-alert-error"   class="alert alert-error"   style="margin:16px"></div>
       <table id="user-table">
         <thead>
           <tr>
@@ -227,9 +228,10 @@
           <td>
             <div style="display:flex;gap:4px;flex-wrap:wrap">
               <button class="btn btn-primary btn-sm" onclick="openPwModal('${u.user_id}')">PW変更</button>
-              ${locked || u.failed_login_count > 0
-                ? `<button class="btn btn-warning btn-sm" onclick="resetLock('${u.user_id}')">ロック解除</button>`
-                : ''}
+              <button class="btn btn-warning btn-sm" onclick="forcePasswordChange('${u.user_id}')" title="次回ログイン時にパスワード変更を強制">PW変更要求</button>
+              ${locked
+                ? `<button class="btn btn-success btn-sm" onclick="resetLock('${u.user_id}')">ロック解除</button>`
+                : `<button class="btn btn-danger btn-sm" onclick="lockUser('${u.user_id}')">ロックする</button>`}
               <button class="btn btn-gray btn-sm" onclick="toggleActive('${u.user_id}', ${!u.is_active})">${u.is_active ? '無効化' : '有効化'}</button>
               <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.user_id}')">削除</button>
             </div>
@@ -280,6 +282,41 @@
       loadUsers();
     } catch (err) {
       showAlert('add-alert-error', '❌ ' + err.message);
+    }
+  }
+
+  // ---- 手動ロック ----
+  async function lockUser(userId) {
+    if (!confirm(`ユーザー「${userId}」をロックしますか？\n管理者が解除するまでログインできなくなります。`)) return;
+    try {
+      const res = await fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lock: true }),
+      });
+      const json = await res.json();
+      if (json.status !== 'success') throw new Error(json.error?.message);
+      loadUsers();
+    } catch (err) {
+      alert('エラー: ' + err.message);
+    }
+  }
+
+  // ---- パスワード変更要求 ----
+  async function forcePasswordChange(userId) {
+    if (!confirm(`ユーザー「${userId}」に対してパスワード変更を要求しますか？\n次回ログイン時にパスワード変更画面へ遷移します。`)) return;
+    try {
+      const res = await fetch(`/api/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ forcePasswordChange: true }),
+      });
+      const json = await res.json();
+      if (json.status !== 'success') throw new Error(json.error?.message);
+      showAlert('list-alert-success', `✅ ${userId} にパスワード変更を要求しました`);
+      loadUsers();
+    } catch (err) {
+      alert('エラー: ' + err.message);
     }
   }
 
