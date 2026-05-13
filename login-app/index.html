@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社内Webシステム</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Meiryo', 'Yu Gothic', 'Hiragino Kaku Gothic Pro', sans-serif;
+      background: #eef2f7;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* ---- 画面切り替え ---- */
+    .screen { display: none; }
+    .screen.active { display: flex; }
+
+    /* ---- ログイン画面 ---- */
+    #screen-login {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 420px;
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .login-header .system-name {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+    .login-header h1 {
+      font-size: 22px;
+      font-weight: bold;
+      color: #1a3a5c;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 6px;
+    }
+    .form-group label .required {
+      color: #e53e3e;
+      margin-left: 4px;
+      font-size: 11px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+      font-family: monospace;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #3182ce;
+      box-shadow: 0 0 0 3px rgba(49,130,206,0.15);
+    }
+    .form-group input.error {
+      border-color: #e53e3e;
+      background: #fff5f5;
+    }
+    .field-error {
+      color: #e53e3e;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+    .field-error.visible { display: block; }
+
+    .hint {
+      font-size: 11px;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: #1a3a5c;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .btn-login:hover { background: #2a5298; }
+    .btn-login:active { background: #122b45; }
+
+    .auth-error {
+      background: #fff5f5;
+      border: 1px solid #feb2b2;
+      border-radius: 4px;
+      padding: 12px 14px;
+      color: #c53030;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .auth-error.visible { display: block; }
+    .auth-locked {
+      background: #fffbeb;
+      border: 1px solid #f6ad55;
+      color: #744210;
+    }
+
+    /* ---- ホーム画面 ---- */
+    #screen-home {
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .top-bar {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .top-bar .title { font-size: 16px; font-weight: bold; }
+    .top-bar .user-info { font-size: 13px; display: flex; align-items: center; gap: 16px; }
+    .btn-logout {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 5px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+    .home-content {
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .home-content h2 {
+      font-size: 20px;
+      color: #1a3a5c;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .dashboard-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      text-align: center;
+      color: #555;
+    }
+    .dashboard-card .icon { font-size: 32px; margin-bottom: 8px; }
+    .dashboard-card .label { font-size: 13px; }
+    .login-success-msg {
+      background: #f0fff4;
+      border: 1px solid #9ae6b4;
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: #276749;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    /* ---- パスワード変更画面 ---- */
+    #screen-pw-change {
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 20px;
+      background: #eef2f7;
+    }
+    .pw-change-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 48px 40px 40px;
+      width: 100%;
+      max-width: 440px;
+    }
+    .pw-change-card h2 {
+      font-size: 20px;
+      color: #1a3a5c;
+      margin-bottom: 8px;
+    }
+    .pw-expired-notice {
+      background: #fffbeb;
+      border: 1px solid #f6ad55;
+      border-radius: 4px;
+      padding: 10px 14px;
+      color: #744210;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .btn-change {
+      width: 100%;
+      padding: 12px;
+      background: #2f855a;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .btn-change:hover { background: #276749; }
+    .pw-change-success {
+      background: #f0fff4;
+      border: 1px solid #9ae6b4;
+      border-radius: 4px;
+      padding: 12px 14px;
+      color: #276749;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .pw-change-success.visible { display: block; }
+
+    /* ---- テスト制御パネル ---- */
+    .test-panel {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 16px 20px;
+      width: 100%;
+      max-width: 420px;
+      margin-top: 16px;
+      border-top: 4px solid #ed8936;
+    }
+    .test-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .test-panel-header h3 {
+      font-size: 13px;
+      color: #c05621;
+      font-weight: bold;
+    }
+    .test-panel-header .toggle-icon { color: #c05621; font-size: 12px; }
+    .test-panel-body { margin-top: 14px; }
+    .test-panel-body.hidden { display: none; }
+    .test-state {
+      font-size: 12px;
+      color: #555;
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      line-height: 1.8;
+    }
+    .test-state .label { color: #888; }
+    .test-state .val-ok { color: #276749; font-weight: bold; }
+    .test-state .val-warn { color: #c05621; font-weight: bold; }
+    .test-state .val-err { color: #c53030; font-weight: bold; }
+    .test-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .test-btn {
+      font-size: 12px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .test-btn-orange { background: #fed7aa; color: #c05621; }
+    .test-btn-orange:hover { background: #fbd38d; }
+    .test-btn-blue { background: #bee3f8; color: #2b6cb0; }
+    .test-btn-blue:hover { background: #90cdf4; }
+    .test-btn-red { background: #fed7d7; color: #c53030; }
+    .test-btn-red:hover { background: #feb2b2; }
+    .test-note {
+      font-size: 11px;
+      color: #888;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== ログイン画面 ========== -->
+<div id="screen-login" class="screen active">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="system-name">PLAIN LIVING Co., Ltd.</div>
+      <h1>社内Webシステム</h1>
+    </div>
+
+    <div id="auth-error" class="auth-error" role="alert"></div>
+
+    <div class="form-group">
+      <label for="user-id">ユーザーID <span class="required">必須</span></label>
+      <input type="text" id="user-id" name="userId" autocomplete="username"
+             maxlength="20" placeholder="例: user001">
+      <div class="hint">半角英数字　1〜20文字</div>
+      <div id="err-userid" class="field-error" role="alert"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">パスワード <span class="required">必須</span></label>
+      <input type="password" id="password" name="password" autocomplete="current-password"
+             maxlength="32" placeholder="">
+      <div class="hint">半角英数記号　8〜32文字</div>
+      <div id="err-password" class="field-error" role="alert"></div>
+    </div>
+
+    <button class="btn-login" id="btn-login" type="button">ログイン</button>
+  </div>
+
+  <!-- テスト制御パネル -->
+  <div class="test-panel">
+    <div class="test-panel-header" id="test-panel-toggle">
+      <h3>🧪 テスト制御パネル</h3>
+      <span class="toggle-icon" id="toggle-icon">▼</span>
+    </div>
+    <div class="test-panel-body" id="test-panel-body">
+      <div class="test-state" id="test-state-display"></div>
+      <div class="test-btns">
+        <button class="test-btn test-btn-orange" onclick="simulateExpiry()">パスワード期限切れにする</button>
+        <button class="test-btn test-btn-blue" onclick="resetExpiry()">パスワード期限をリセット</button>
+        <button class="test-btn test-btn-red" onclick="resetLock()">ロック解除・失敗回数リセット</button>
+      </div>
+      <div class="test-note">
+        ✅ 正常ログイン: <strong>user001</strong> / <strong>P@ssword</strong><br>
+        ❌ 認証失敗テスト: 上記以外の組み合わせ<br>
+        🔒 ロックテスト: 失敗を5回繰り返す<br>
+        🔑 期限切れテスト: 「期限切れにする」→ 正常ログイン
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ホーム画面 ========== -->
+<div id="screen-home" class="screen">
+  <div class="top-bar">
+    <div class="title">社内Webシステム</div>
+    <div class="user-info">
+      <span id="home-username"></span>
+      <button class="btn-logout" onclick="logout()">ログアウト</button>
+    </div>
+  </div>
+  <div class="home-content">
+    <div class="login-success-msg" id="login-success-msg"></div>
+    <h2>ホーム</h2>
+    <div class="dashboard-grid">
+      <div class="dashboard-card"><div class="icon">📋</div><div class="label">申請管理</div></div>
+      <div class="dashboard-card"><div class="icon">📅</div><div class="label">スケジュール</div></div>
+      <div class="dashboard-card"><div class="icon">📊</div><div class="label">レポート</div></div>
+      <div class="dashboard-card"><div class="icon">👥</div><div class="label">組織情報</div></div>
+      <div class="dashboard-card"><div class="icon">⚙️</div><div class="label">設定</div></div>
+      <div class="dashboard-card"><div class="icon">❓</div><div class="label">ヘルプ</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== パスワード変更画面 ========== -->
+<div id="screen-pw-change" class="screen">
+  <div class="pw-change-card">
+    <h2>パスワードの変更</h2>
+    <div class="pw-expired-notice">
+      ⚠️ パスワードの有効期限（90日）が切れています。新しいパスワードを設定してください。
+    </div>
+
+    <div id="pw-change-success" class="pw-change-success">
+      ✅ パスワードを変更しました。ログイン画面に戻ります。
+    </div>
+
+    <div class="form-group">
+      <label for="new-password">新しいパスワード <span class="required">必須</span></label>
+      <input type="password" id="new-password" maxlength="32" placeholder="">
+      <div class="hint">半角英数記号　8〜32文字</div>
+      <div id="err-new-password" class="field-error" role="alert"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="confirm-password">新しいパスワード（確認） <span class="required">必須</span></label>
+      <input type="password" id="confirm-password" maxlength="32" placeholder="">
+      <div id="err-confirm-password" class="field-error" role="alert"></div>
+    </div>
+
+    <button class="btn-change" id="btn-change" type="button">パスワードを変更する</button>
+  </div>
+</div>
+
+<script>
+  // ======== 定数 ========
+  const MOCK_USER_ID  = 'user001';
+  const MOCK_PASSWORD = 'P@ssword';
+  const MAX_FAIL      = 5;
+  const LOCK_MS       = 30 * 60 * 1000; // 30分
+  const PW_EXPIRY_DAYS = 90;
+
+  // localStorage キー
+  const KEY_FAIL_COUNT  = 'loginFailCount';
+  const KEY_LOCK_UNTIL  = 'loginLockUntil';
+  const KEY_PW_CREATED  = 'pwCreatedAt';
+
+  // 初期化（初回のみ）
+  if (!localStorage.getItem(KEY_PW_CREATED)) {
+    localStorage.setItem(KEY_PW_CREATED, Date.now().toString());
+  }
+
+  // ======== 状態取得 ========
+  function getFailCount() {
+    return parseInt(localStorage.getItem(KEY_FAIL_COUNT) || '0');
+  }
+  function getLockUntil() {
+    return parseInt(localStorage.getItem(KEY_LOCK_UNTIL) || '0');
+  }
+  function getPwCreatedAt() {
+    return parseInt(localStorage.getItem(KEY_PW_CREATED) || Date.now().toString());
+  }
+
+  function checkLock() {
+    const until = getLockUntil();
+    if (until <= 0) return { locked: false };
+    if (Date.now() < until) {
+      return { locked: true, remainMs: until - Date.now() };
+    }
+    // 自動解除
+    localStorage.removeItem(KEY_LOCK_UNTIL);
+    localStorage.setItem(KEY_FAIL_COUNT, '0');
+    return { locked: false };
+  }
+
+  function isPasswordExpired() {
+    const created = getPwCreatedAt();
+    const days = (Date.now() - created) / (1000 * 60 * 60 * 24);
+    return days >= PW_EXPIRY_DAYS;
+  }
+
+  function formatRemaining(ms) {
+    const m = Math.floor(ms / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    if (m > 0) return `約${m}分${s}秒`;
+    return `約${s}秒`;
+  }
+
+  // ======== バリデーション ========
+  const RE_USERID   = /^[a-zA-Z0-9]+$/;
+  const RE_PASSWORD = /^[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]+$/;
+
+  function validateUserId(val) {
+    if (!val) return 'ユーザーIDを入力してください';
+    if (!RE_USERID.test(val)) return 'ユーザーIDは半角英数字で入力してください';
+    if (val.length < 1 || val.length > 20) return 'ユーザーIDは1〜20文字で入力してください';
+    return null;
+  }
+
+  function validatePassword(val) {
+    if (!val) return 'パスワードを入力してください';
+    if (!RE_PASSWORD.test(val)) return 'パスワードは半角英数記号で入力してください';
+    if (val.length < 8 || val.length > 32) return 'パスワードは8〜32文字で入力してください';
+    return null;
+  }
+
+  function showFieldError(errId, inputEl, msg) {
+    const errEl = document.getElementById(errId);
+    if (msg) {
+      errEl.textContent = msg;
+      errEl.classList.add('visible');
+      inputEl.classList.add('error');
+    } else {
+      errEl.textContent = '';
+      errEl.classList.remove('visible');
+      inputEl.classList.remove('error');
+    }
+  }
+
+  // ======== 画面遷移 ========
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // ======== ログイン処理 ========
+  document.getElementById('btn-login').addEventListener('click', doLogin);
+  document.getElementById('user-id').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+  // リアルタイムバリデーション（フォーカスアウト時）
+  document.getElementById('user-id').addEventListener('blur', () => {
+    const val = document.getElementById('user-id').value;
+    showFieldError('err-userid', document.getElementById('user-id'), validateUserId(val));
+  });
+  document.getElementById('password').addEventListener('blur', () => {
+    const val = document.getElementById('password').value;
+    showFieldError('err-password', document.getElementById('password'), validatePassword(val));
+  });
+
+  function doLogin() {
+    const userIdEl  = document.getElementById('user-id');
+    const passwordEl = document.getElementById('password');
+    const userId   = userIdEl.value.trim();
+    const password = passwordEl.value;
+
+    // フィールドバリデーション
+    const userIdErr  = validateUserId(userId);
+    const passwordErr = validatePassword(password);
+    showFieldError('err-userid',   userIdEl,   userIdErr);
+    showFieldError('err-password', passwordEl, passwordErr);
+    if (userIdErr || passwordErr) return;
+
+    // 認証前ロックチェック
+    const lockState = checkLock();
+    if (lockState.locked) {
+      showAuthError(`アカウントがロックされています。${formatRemaining(lockState.remainMs)}後に自動解除されます。`, true);
+      return;
+    }
+
+    // 認証
+    if (userId === MOCK_USER_ID && password === MOCK_PASSWORD) {
+      localStorage.setItem(KEY_FAIL_COUNT, '0');
+
+      if (isPasswordExpired()) {
+        showScreen('screen-pw-change');
+        return;
+      }
+
+      // ログイン成功
+      document.getElementById('home-username').textContent = userId + ' さん';
+      document.getElementById('login-success-msg').textContent = `ログインしました（${new Date().toLocaleString('ja-JP')}）`;
+      showScreen('screen-home');
+      updateTestPanel();
+    } else {
+      // 認証失敗
+      const newCount = getFailCount() + 1;
+      localStorage.setItem(KEY_FAIL_COUNT, newCount.toString());
+
+      if (newCount >= MAX_FAIL) {
+        const until = Date.now() + LOCK_MS;
+        localStorage.setItem(KEY_LOCK_UNTIL, until.toString());
+        showAuthError('ログインに連続5回失敗したため、アカウントをロックしました。30分後に自動解除されます。', true);
+      } else {
+        const remain = MAX_FAIL - newCount;
+        showAuthError(`ユーザーIDまたはパスワードが正しくありません。（あと${remain}回失敗するとロックされます）`);
+      }
+      updateTestPanel();
+    }
+  }
+
+  function showAuthError(msg, isLock = false) {
+    const el = document.getElementById('auth-error');
+    el.textContent = msg;
+    el.classList.add('visible');
+    if (isLock) el.classList.add('auth-locked');
+    else el.classList.remove('auth-locked');
+  }
+
+  function hideAuthError() {
+    const el = document.getElementById('auth-error');
+    el.classList.remove('visible');
+    el.classList.remove('auth-locked');
+  }
+
+  // 入力変更時にエラーをクリア
+  document.getElementById('user-id').addEventListener('input', hideAuthError);
+  document.getElementById('password').addEventListener('input', hideAuthError);
+
+  // ======== ログアウト ========
+  function logout() {
+    document.getElementById('user-id').value = '';
+    document.getElementById('password').value = '';
+    hideAuthError();
+    showFieldError('err-userid', document.getElementById('user-id'), null);
+    showFieldError('err-password', document.getElementById('password'), null);
+    showScreen('screen-login');
+    updateTestPanel();
+  }
+
+  // ======== パスワード変更 ========
+  document.getElementById('btn-change').addEventListener('click', doChangePassword);
+
+  function doChangePassword() {
+    const newPwEl     = document.getElementById('new-password');
+    const confirmEl   = document.getElementById('confirm-password');
+    const newPw       = newPwEl.value;
+    const confirmPw   = confirmEl.value;
+
+    const newPwErr = validatePassword(newPw);
+    showFieldError('err-new-password', newPwEl, newPwErr);
+
+    let confirmErr = null;
+    if (!confirmPw) {
+      confirmErr = '確認用パスワードを入力してください';
+    } else if (newPw !== confirmPw) {
+      confirmErr = 'パスワードが一致しません';
+    }
+    showFieldError('err-confirm-password', confirmEl, confirmErr);
+
+    if (newPwErr || confirmErr) return;
+
+    // パスワード更新（モック：createdAtをリセット）
+    localStorage.setItem(KEY_PW_CREATED, Date.now().toString());
+    localStorage.setItem(KEY_FAIL_COUNT, '0');
+
+    const successEl = document.getElementById('pw-change-success');
+    successEl.classList.add('visible');
+    document.getElementById('btn-change').disabled = true;
+
+    setTimeout(() => {
+      successEl.classList.remove('visible');
+      document.getElementById('btn-change').disabled = false;
+      newPwEl.value = '';
+      confirmEl.value = '';
+      showScreen('screen-login');
+      updateTestPanel();
+    }, 2000);
+  }
+
+  // ======== テスト制御パネル ========
+  document.getElementById('test-panel-toggle').addEventListener('click', () => {
+    const body = document.getElementById('test-panel-body');
+    const icon = document.getElementById('toggle-icon');
+    body.classList.toggle('hidden');
+    icon.textContent = body.classList.contains('hidden') ? '▶' : '▼';
+  });
+
+  function updateTestPanel() {
+    const failCount = getFailCount();
+    const lockState = checkLock();
+    const expired   = isPasswordExpired();
+    const created   = getPwCreatedAt();
+    const daysSince = ((Date.now() - created) / (1000 * 60 * 60 * 24)).toFixed(1);
+
+    let lockStr, lockClass;
+    if (lockState.locked) {
+      lockStr = `🔒 ロック中（${formatRemaining(lockState.remainMs)}後解除）`;
+      lockClass = 'val-err';
+    } else {
+      lockStr = '✅ 未ロック';
+      lockClass = 'val-ok';
+    }
+
+    let expStr, expClass;
+    if (expired) {
+      expStr = `❌ 期限切れ（${daysSince}日経過）`;
+      expClass = 'val-err';
+    } else {
+      expStr = `✅ 有効（${daysSince}日経過 / 90日）`;
+      expClass = 'val-ok';
+    }
+
+    document.getElementById('test-state-display').innerHTML = `
+      <span class="label">失敗回数:</span>
+        <span class="${failCount >= MAX_FAIL ? 'val-err' : failCount > 0 ? 'val-warn' : 'val-ok'}">${failCount} / ${MAX_FAIL}回</span><br>
+      <span class="label">アカウント:</span>
+        <span class="${lockClass}">${lockStr}</span><br>
+      <span class="label">パスワード期限:</span>
+        <span class="${expClass}">${expStr}</span>
+    `;
+  }
+
+  function simulateExpiry() {
+    const expiredDate = Date.now() - (91 * 24 * 60 * 60 * 1000);
+    localStorage.setItem(KEY_PW_CREATED, expiredDate.toString());
+    updateTestPanel();
+    alert('パスワード期限切れ状態にしました。\n「user001 / P@ssword」でログインするとパスワード変更画面に遷移します。');
+  }
+
+  function resetExpiry() {
+    localStorage.setItem(KEY_PW_CREATED, Date.now().toString());
+    updateTestPanel();
+    alert('パスワード有効期限をリセットしました（本日基準の90日後）。');
+  }
+
+  function resetLock() {
+    localStorage.removeItem(KEY_LOCK_UNTIL);
+    localStorage.setItem(KEY_FAIL_COUNT, '0');
+    updateTestPanel();
+    hideAuthError();
+    alert('ロックを解除し、失敗回数をリセットしました。');
+  }
+
+  // 初期表示
+  updateTestPanel();
+
+  // ロック中は30秒ごとに表示を更新
+  setInterval(() => {
+    if (document.getElementById('screen-login').classList.contains('active')) {
+      updateTestPanel();
+    }
+  }, 5000);
+</script>
+</body>
+</html>
