@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "init-db": "node init-db.js"
+    "init-db": "node init-db.js",
+    "test": "playwright test",
+    "test:report": "playwright test --reporter=html && playwright show-report test-report"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -15,5 +17,8 @@
     "js-yaml": "^4.1.1",
     "pg": "^8.11.3",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
   }
 }
