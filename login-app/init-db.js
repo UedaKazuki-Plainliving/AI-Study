@@ -6,12 +6,14 @@ const { Client } = require('pg');
 const bcrypt = require('bcrypt');
 
 const DB_NAME = 'login_app_db';
+const SSL_CONFIG = process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false;
 const ADMIN_CONN = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'password',
   port: parseInt(process.env.DB_PORT || '5432'),
   database: 'postgres',
+  ssl: SSL_CONFIG,
 };
 
 async function run() {
