@@ -60,8 +60,8 @@ https://api.example.com/v1
 
 ```json
 {
-  "userId": "user001",
-  "password": "P@ssword"
+  "userId": "ユーザーID",
+  "password": "パスワード"
 }
 ```
 
@@ -76,7 +76,7 @@ https://api.example.com/v1
 {
   "status": "success",
   "data": {
-    "userId": "user001",
+    "userId": "{ユーザーID}",
     "sessionToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "expiresAt": "2026-05-13T18:00:00+09:00"
   }
@@ -235,7 +235,7 @@ https://api.example.com/v1
 {
   "status": "success",
   "data": {
-    "userId": "user001",
+    "userId": "{ユーザーID}",
     "sessionValid": true,
     "expiresAt": "2026-05-13T18:00:00+09:00",
     "passwordExpiresAt": "2026-08-11T00:00:00+09:00"
@@ -300,6 +300,6 @@ https://api.example.com/v1
 
 ## 注意事項
 
-- 本APIはモック実装のため、実際のサーバーとの通信は行わない
-- セッショントークンはローカルストレージに保存し、ブラウザ間で共有されない
-- アカウントロック状態・失敗回数はlocalStorageで管理（本番ではDB管理）
+- セッショントークンはHTTPOnly Cookieまたはメモリ上で管理し、localStorageへの保存は避けること
+- パスワードは通信時にTLS（HTTPS）で暗号化すること
+- ブルートフォース攻撃対策として、認証失敗回数のカウントはサーバー側（DB）で管理すること
