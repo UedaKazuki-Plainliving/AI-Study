@@ -9,6 +9,7 @@ const { test, expect } = require('@playwright/test');
 const NORMAL  = { userId: 'e2enormal',  password: 'TestP@ss1' };
 const LOCK    = { userId: 'e2elock',    password: 'TestP@ss1' };
 const EXPIRED = { userId: 'e2eexpired', password: 'TestP@ss1' };
+const ADMIN   = { userId: 'admin',      password: 'root1234' };
 const WRONG_PASSWORD = 'WrongP@ss9';
 
 // ---- セットアップ ----
@@ -45,6 +46,18 @@ async function fillAndLogin(page, userId, password) {
 // ============================================================
 // 正常系
 // ============================================================
+
+// TC-E02 / SC-ADM-01: 管理者ログイン → 管理画面遷移
+test('TC-E02 / SC-ADM-01: 管理者ログイン → 管理画面に遷移', async ({ page }) => {
+  await gotoLogin(page);
+  await page.locator('#user-id').fill(ADMIN.userId);
+  await page.locator('#password').fill(ADMIN.password);
+  await page.locator('#btn-login').click();
+
+  await page.waitForURL('**/admin.html', { timeout: 10000 });
+  await expect(page).toHaveURL(/admin\.html/);
+  await expect(page.locator('h1, h2').first()).toContainText('ユーザー管理');
+});
 
 // SC-01: 正常ログイン
 test('SC-01: 正常ログイン → ホーム画面遷移', async ({ page }) => {
@@ -230,6 +243,39 @@ test('SC-12: 確認パスワード不一致 → フィールドエラー', async
 
   await expect(page.locator('#err-confirm-password')).toBeVisible();
   await expect(page.locator('#err-confirm-password')).toContainText('パスワードが一致しません');
+});
+
+// ============================================================
+// セキュリティ
+// ============================================================
+
+// TC-S01 / SC-SEC-01: ログアウト後のセッション無効化
+test('TC-S01 / SC-SEC-01: ログアウト後のセッション無効化確認', async ({ page, request }) => {
+  await gotoLogin(page);
+  await fillAndLogin(page, NORMAL.userId, NORMAL.password);
+  await expect(page.locator('#screen-home')).toBeVisible();
+
+  await page.locator('.btn-logout').click();
+  await expect(page.locator('#screen-login')).toBeVisible();
+
+  // セッションが無効化されていることをAPI経由で確認
+  const res = await request.get('/api/auth/status');
+  expect(res.status()).toBe(401);
+});
+
+// TC-S02 / SC-SEC-02: 不正なユーザーIDでのログイン試行（SQLインジェクション）
+test('TC-S02 / SC-SEC-02: SQLインジェクション文字列 → ログイン拒否', async ({ page }) => {
+  await gotoLogin(page);
+  await page.locator('#user-id').fill("' OR '1'='1");
+  await page.locator('#password').fill('anything');
+  await page.locator('#btn-login').click();
+
+  // ホーム画面へ遷移しない
+  await expect(page.locator('#screen-home')).not.toBeVisible();
+  // バリデーションエラーまたは認証エラーが表示される
+  const hasValidationError = await page.locator('#err-userid').isVisible();
+  const hasAuthError       = await page.locator('#auth-error').isVisible();
+  expect(hasValidationError || hasAuthError).toBeTruthy();
 });
 
 // 変更成功後ボタンは無効化を維持（仕様 SC-10 のサブ確認）

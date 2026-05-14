@@ -7,9 +7,11 @@
  */
 const { test, expect } = require('@playwright/test');
 
-const LOCK_USER = { userId: 'e2elocktest', password: 'TestP@ss1' };
-const DEL_USER  = { userId: 'e2edelete',   password: 'TestP@ss1' };
-const NEW_USER  = { userId: 'e2enew001',   password: 'TestP@ss1' };
+const LOCK_USER  = { userId: 'e2elocktest', password: 'TestP@ss1' };
+const DEL_USER   = { userId: 'e2edelete',   password: 'TestP@ss1' };
+const NEW_USER   = { userId: 'e2enew001',   password: 'TestP@ss1' };
+const ADMIN      = { userId: 'admin',       password: 'root1234'  };
+const ADMIN_NEW_PW = 'NewAdminPw1!';
 
 test.beforeAll(async ({ request }) => {
   await request.delete(`/api/users/${LOCK_USER.userId}`);
@@ -189,6 +191,51 @@ test('SC-A10: ユーザー有効化 → 有効バッジ表示', async ({ page, r
 // ============================================================
 // ユーザー削除
 // ============================================================
+
+// ============================================================
+// 管理者アカウント保護
+// ============================================================
+
+// TC-A06 / SC-ADM-03: 管理者バッジ表示・操作ボタン非表示
+test('TC-A06 / SC-ADM-03: admin行に管理者バッジ・削除/ロック/無効化ボタン非表示', async ({ page }) => {
+  await gotoAdmin(page);
+
+  const adminRow = page.locator('#user-tbody tr').filter({ hasText: 'admin' });
+  await expect(adminRow).toBeVisible();
+  await expect(adminRow.locator('.badge-admin')).toBeVisible();
+  await expect(adminRow.getByRole('button', { name: '削除' })).not.toBeVisible();
+  await expect(adminRow.getByRole('button', { name: 'ロックする' })).not.toBeVisible();
+  await expect(adminRow.getByRole('button', { name: '無効化' })).not.toBeVisible();
+});
+
+// TC-A05 / SC-ADM-02: 管理者パスワード変更 → 新パスワードでログイン成功
+// パスワードを変更してから元に戻すため serial で実行
+test.describe.serial('TC-A05: 管理者パスワード変更', () => {
+  test('SC-ADM-02: 管理者PWを変更 → 成功メッセージ → 新PWでログイン成功', async ({ page, request }) => {
+    await gotoAdmin(page);
+
+    await page.locator('#admin-pw-input').fill(ADMIN_NEW_PW);
+    await page.locator('button', { hasText: '変更する' }).click();
+
+    await expect(page.locator('#admin-pw-alert-success')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#admin-pw-alert-success')).toContainText('変更しました');
+
+    // 新パスワードでログインできることを確認
+    await page.goto('/index.html');
+    await expect(page.locator('#screen-login')).toBeVisible();
+    await page.locator('#user-id').fill(ADMIN.userId);
+    await page.locator('#password').fill(ADMIN_NEW_PW);
+    await page.locator('#btn-login').click();
+
+    await page.waitForURL('**/admin.html', { timeout: 10000 });
+    await expect(page).toHaveURL(/admin\.html/);
+  });
+
+  test.afterAll(async ({ request }) => {
+    // 元のパスワードに戻す
+    await request.put('/api/admin/password', { data: { password: ADMIN.password } });
+  });
+});
 
 // SC-A11: ユーザー削除
 test('SC-A11: ユーザー削除 → 一覧から消える', async ({ page, request }) => {
