@@ -99,8 +99,8 @@ test.describe.serial('TC-B03: ロック中はログイン拒否', () => {
 // ロック期間は30分のため自動待機テストは非現実的。
 // 管理者ロック解除APIを使って「ロック解除済み」状態を再現する。
 test('TC-B04 / SC-BV-LOCK-EXPIRED: ロック解除後のログイン成功', async ({ page, request }) => {
-  // ロック解除
-  await request.put(`/api/users/${LOCK_BV.userId}`, { data: { unlock: true } });
+  // ロック解除（resetLock: true）
+  await request.put(`/api/users/${LOCK_BV.userId}`, { data: { resetLock: true } });
 
   await gotoLogin(page);
   await page.locator('#user-id').fill(LOCK_BV.userId);
