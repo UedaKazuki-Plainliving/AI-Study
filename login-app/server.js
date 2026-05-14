@@ -6,13 +6,14 @@ const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const yaml = require('js-yaml');
 const fs = require('fs');
+const {
+  MAX_FAIL, LOCK_MINUTES, PW_EXPIRY_DAYS, SALT_ROUNDS,
+  RE_USERID, RE_PASSWORD,
+  isPasswordExpired, isLocked,
+} = require('./src/utils');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SALT_ROUNDS = 10;
-const MAX_FAIL = 5;
-const LOCK_MINUTES = 30;
-const PW_EXPIRY_DAYS = 90;
 
 // ---- DB接続 ----
 const pool = new Pool({
@@ -39,15 +40,6 @@ app.use(session({
 }));
 
 // ---- ヘルパー ----
-function isPasswordExpired(passwordChangedAt) {
-  const days = (Date.now() - new Date(passwordChangedAt).getTime()) / (1000 * 60 * 60 * 24);
-  return days >= PW_EXPIRY_DAYS;
-}
-
-function isLocked(lockedUntil) {
-  return lockedUntil && new Date(lockedUntil) > new Date();
-}
-
 async function logHistory(userId, result, ip) {
   await pool.query(
     'INSERT INTO login_histories (user_id, result, ip_address) VALUES ($1, $2, $3)',
@@ -231,8 +223,6 @@ app.get('/api/users', async (req, res) => {
 // POST /api/users
 app.post('/api/users', async (req, res) => {
   const { userId, password } = req.body || {};
-  const RE_USERID   = /^[a-zA-Z0-9]{1,20}$/;
-  const RE_PASSWORD = /^[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{8,32}$/;
 
   const fields = {};
   if (!userId || !RE_USERID.test(userId))     fields.userId   = 'ユーザーIDは半角英数字1〜20文字で入力してください';
@@ -274,7 +264,6 @@ app.put('/api/users/:userId', async (req, res) => {
     let idx = 1;
 
     if (password !== undefined) {
-      const RE_PASSWORD = /^[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{8,32}$/;
       if (!RE_PASSWORD.test(password)) {
         return res.status(400).json({ status: 'error', error: { code: 'VALIDATION_ERROR', message: 'パスワードは半角英数記号8〜32文字で入力してください' } });
       }
