@@ -283,7 +283,7 @@ TEST_CASES = [
     ("TC-E01","一般ユーザー正常ログイン","正常系",
      "・user001 が有効状態で存在する\n・PW 有効期限が 90 日以内\n・ブラウザでログイン画面を開いている",
      "1. ユーザーID欄に「user001」を入力\n2. パスワード欄に「P@ssword」を入力\n3. ログインボタンをクリック",
-     "1. #screen-home が display:flex になる\n2. #home-username のテキストが「user001 さん」\n3. ログイン成功メッセージが表示される",
+     "1. ホーム画面に切り替わる\n2. ホーム画面のユーザー名表示が「user001 さん」になる\n3. ログイン成功メッセージが表示される",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-01", "最高"),
 
     ("TC-E02","管理者ログイン → 管理画面遷移","正常系",
@@ -295,71 +295,71 @@ TEST_CASES = [
     ("TC-E03","ユーザーID未入力バリデーション","異常系",
      "・ブラウザでログイン画面を開いている",
      "1. ユーザーID欄を空のままにする\n2. パスワード欄に「P@ssword」を入力\n3. ログインボタンをクリック",
-     "1. #err-userid が visible になる\n2. エラー文言が「ユーザーIDを入力してください」\n3. #user-id に error クラスが付く\n4. API 呼び出しは発生しない",
+     "1. ユーザーIDエラーメッセージが表示される\n2. エラー文言が「ユーザーIDを入力してください」\n3. ユーザーID入力欄がエラー表示になる\n4. API 呼び出しは発生しない",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-02", "高"),
 
     ("TC-E04","パスワード未入力バリデーション","異常系",
      "・ブラウザでログイン画面を開いている",
      "1. ユーザーID欄に「user001」を入力\n2. パスワード欄を空のままにする\n3. ログインボタンをクリック",
-     "1. #err-password が visible になる\n2. エラー文言が「パスワードを入力してください」\n3. API 呼び出しは発生しない",
+     "1. パスワードエラーメッセージが表示される\n2. エラー文言が「パスワードを入力してください」\n3. API 呼び出しは発生しない",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-03", "高"),
 
     ("TC-E05","記号含むユーザーID バリデーション","異常系",
      "・ブラウザでログイン画面を開いている",
      "1. ユーザーID欄に「user_invalid」を入力\n2. フォーカスをパスワード欄に移す（blur）",
-     "1. #err-userid が visible になる\n2. エラー文言が「ユーザーIDは半角英数字で入力してください」",
+     "1. ユーザーIDエラーメッセージが表示される\n2. エラー文言が「ユーザーIDは半角英数字で入力してください」",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-04", "高"),
 
     ("TC-E06","パスワード 7文字（最小値-1）バリデーション","境界値",
      "・ブラウザでログイン画面を開いている",
      "1. パスワード欄に「P@ss001」（7文字）を入力\n2. フォーカスを外す（blur）",
-     "1. #err-password が visible になる\n2. エラー文言が「パスワードは8〜32文字で入力してください」",
+     "1. パスワードエラーメッセージが表示される\n2. エラー文言が「パスワードは8〜32文字で入力してください」",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-05[BV]", "高"),
 
     ("TC-E07","パスワード 8文字（最小値）バリデーション","境界値",
      "・ブラウザでログイン画面を開いている",
      "1. パスワード欄に「P@ssw001」（8文字）を入力\n2. フォーカスを外す（blur）",
-     "1. #err-password に visible クラスがない\n2. エラーメッセージが表示されない",
+     "1. パスワードエラーメッセージが表示されない\n2. エラーメッセージが表示されない",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-05[BV-min]", "高"),
 
     ("TC-E08","認証失敗 - 残り試行回数表示（1回目）","異常系",
-     "・user001 が有効状態で存在する（failed_login_count = 0）",
+     "・user001 が有効状態で存在する（ログイン失敗回数がゼロの状態）",
      "1. ユーザーID「user001」/ パスワード「wrongpass」でログイン",
-     "1. #auth-error が visible になる\n2. テキストに「あと4回失敗するとロックされます」が含まれる\n3. auth-locked クラスは付かない",
+     "1. 認証エラーメッセージが表示される\n2. テキストに「あと4回失敗するとロックされます」が含まれる\n3. ロックエラー表示にはなっていない",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-06", "高"),
 
     ("TC-E09","5回連続失敗でアカウントロック","境界値",
-     "・e2elock が有効状態で存在する（failed_login_count = 0）",
+     "・e2elock が有効状態で存在する（ログイン失敗回数がゼロの状態）",
      "1. e2elock / 誤PW でログイン（1回目）→ 残り4回確認\n"
      "2. e2elock / 誤PW でログイン（2回目）→ 残り3回確認\n"
      "3. e2elock / 誤PW でログイン（3回目）→ 残り2回確認\n"
      "4. e2elock / 誤PW でログイン（4回目）→ 残り1回確認\n"
      "5. e2elock / 誤PW でログイン（5回目）",
-     "1. 1〜4回目：#auth-error に残り回数（4,3,2,1）が表示される\n"
-     "2. 5回目：#auth-error に auth-locked クラスが付く\n"
+     "1. 1〜4回目：認証エラーメッセージに残り回数（4,3,2,1）が表示される\n"
+     "2. 5回目：認証エラーメッセージがロックエラー表示になる\n"
      "3. 5回目：ロックメッセージが表示される",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-07", "最高"),
 
     ("TC-E10","ロック中のログイン拒否","異常系",
      "・e2elock がロック状態で存在する（locked_until が未来の日時）",
      "1. e2elock / 正しいパスワードでログインを試みる",
-     "1. #auth-error に auth-locked クラスが付く\n2. ロック中メッセージが表示される\n3. ホーム画面へは遷移しない",
+     "1. 認証エラーメッセージがロックエラー表示になる\n2. ロック中メッセージが表示される\n3. ホーム画面へは遷移しない",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-08", "最高"),
 
     ("TC-E11","PW期限切れ → 変更画面遷移","異常系",
      "・e2eexpired が有効状態で存在する（password_changed_at が 91 日以上前）",
      "1. e2eexpired / 正しいパスワードでログインする",
-     "1. #screen-pw-change が display:flex になる\n2. ログイン画面（#screen-login）は非表示になる",
+     "1. パスワード変更画面に切り替わる\n2. ログイン画面は非表示になる",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-09", "高"),
 
     ("TC-E12","PW変更成功と自動遷移","正常系",
-     "・PW変更画面（#screen-pw-change）が表示されている状態",
+     "・パスワード変更画面が表示されている状態",
      "1. 新しいパスワード欄に「NewPass1!」を入力\n"
      "2. 確認パスワード欄に「NewPass1!」を入力\n"
      "3. 「パスワードを変更する」ボタンをクリック",
-     "1. #pw-change-success が visible になる\n"
-     "2. #btn-change が disabled になる\n"
-     "3. 2秒後に #screen-login が表示される",
+     "1. パスワード変更成功メッセージが表示される\n"
+     "2. 「パスワードを変更する」ボタンが非活性になる\n"
+     "3. 2秒後にログイン画面が表示される",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-10", "高"),
 
     ("TC-E13","PW変更 - 確認PW不一致エラー","異常系",
@@ -367,17 +367,17 @@ TEST_CASES = [
      "1. 新しいパスワード欄に「NewPass1!」を入力\n"
      "2. 確認パスワード欄に「DifferentPass1!」を入力\n"
      "3. 「パスワードを変更する」ボタンをクリック",
-     "1. #err-confirm-password に「パスワードが一致しません」が表示される\n"
-     "2. API（change-password）は呼び出されない",
+     "1. 確認パスワードエラーメッセージに「パスワードが一致しません」が表示される\n"
+     "2. パスワード変更APIは呼び出されない",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-12", "高"),
 
     ("TC-E14","ログアウトとフォームクリア","正常系",
      "・user001 でログイン済み（ホーム画面表示中）",
      "1. ログアウトボタンをクリックする",
-     "1. #screen-login が表示される\n"
-     "2. #user-id の value が空文字\n"
-     "3. #password の value が空文字\n"
-     "4. #auth-error は非表示のまま",
+     "1. ログイン画面が表示される\n"
+     "2. ユーザーID入力欄が空になる\n"
+     "3. パスワード入力欄が空になる\n"
+     "4. 認証エラーメッセージは非表示のまま",
      "Playwright E2E", "tests/e2e/login.spec.js > SC-11", "高"),
 
     ("TC-A01","管理者：ユーザー追加成功","正常系",
@@ -385,7 +385,7 @@ TEST_CASES = [
      "1. ユーザーID欄に「e2enew001」を入力\n"
      "2. パスワード欄に「NewPass1!」を入力\n"
      "3. 「追加」ボタンをクリック",
-     "1. #add-alert-success が表示される\n"
+     "1. ユーザー追加成功アラートが表示される\n"
      "2. ユーザー一覧に e2enew001 が追加される\n"
      "3. e2enew001 に「有効」バッジが表示される",
      "Playwright E2E", "tests/e2e/admin.spec.js > SC-A01", "高"),
@@ -395,7 +395,7 @@ TEST_CASES = [
      "1. ユーザーID欄に「user001」を入力\n"
      "2. パスワード欄に「NewPass1!」を入力\n"
      "3. 「追加」ボタンをクリック",
-     "1. #add-alert-error が表示される\n"
+     "1. ユーザー追加エラーアラートが表示される\n"
      "2. エラーメッセージに「すでに使用されています」が含まれる",
      "Playwright E2E", "tests/e2e/admin.spec.js > SC-A02", "高"),
 
@@ -404,14 +404,14 @@ TEST_CASES = [
      "1. e2elocktest の「ロックする」ボタンをクリック\n"
      "2. 確認ダイアログで「OK」をクリック",
      "1. 成功メッセージが表示される\n"
-     "2. e2elocktest のバッジが「ロック中」（badge-locked）になる",
+     "2. e2elocktest のバッジが「ロック中」になる",
      "Playwright E2E", "tests/e2e/admin.spec.js > SC-A05", "高"),
 
     ("TC-A04","管理者：ロック解除","正常系",
      "・e2elocktest がロック状態で存在する",
      "1. e2elocktest の「ロック解除」ボタンをクリック",
      "1. 成功メッセージが表示される\n"
-     "2. e2elocktest のバッジが「有効」（badge-active）になる",
+     "2. e2elocktest のバッジが「有効」になる",
      "Playwright E2E", "tests/e2e/admin.spec.js > SC-A06", "高"),
 
     ("TC-A05","管理者：管理者パスワード変更","正常系",
@@ -419,15 +419,15 @@ TEST_CASES = [
      "1. 管理者PW変更カードの入力欄に「newadminpw」を入力\n"
      "2. 「変更する」ボタンをクリック\n"
      "3. ログイン画面で admin / newadminpw でログインする",
-     "1. 成功アラート（#admin-pw-alert-success）が表示される\n"
+     "1. 管理者パスワード変更成功アラートが表示される\n"
      "2. admin / newadminpw でログインに成功する\n"
-     "3. /admin.html へリダイレクトされる",
+     "3. 管理画面へリダイレクトされる",
      "Playwright E2E", "tests/e2e/admin.spec.js > SC-ADM-02", "最高"),
 
     ("TC-A06","管理者：管理者バッジ表示・保護確認","正常系",
      "・管理画面が表示されている",
      "1. ユーザー一覧を確認する",
-     "1. admin 行に「管理者」バッジ（badge-admin）が表示される\n"
+     "1. admin 行に「管理者」バッジが表示される\n"
      "2. admin 行に削除・ロック・無効化ボタンが表示されない",
      "Playwright E2E", "tests/e2e/admin.spec.js > SC-ADM-03", "高"),
 
@@ -436,7 +436,7 @@ TEST_CASES = [
      "1. e2elocktest の「無効化」ボタンをクリック\n"
      "2. 確認ダイアログで「OK」をクリック",
      "1. 成功メッセージが表示される\n"
-     "2. e2elocktest のバッジが「無効」（badge-inactive）になる",
+     "2. e2elocktest のバッジが「無効」になる",
      "Playwright E2E", "tests/e2e/admin.spec.js > SC-A09", "中"),
 
     ("TC-P01","POST /api/auth/login - 正常ログイン","正常系（API）",
@@ -452,13 +452,13 @@ TEST_CASES = [
      "Playwright API", "tests/auth.spec.js > TC-ADM-L01", "最高"),
 
     ("TC-P03","POST /api/auth/login - PW不一致（1回目）","異常系（API）",
-     "・user001 が有効状態（failed_login_count = 0）",
+     "・user001 が有効状態（ログイン失敗回数がゼロの状態）",
      "1. POST /api/auth/login\n   body: { userId: 'user001', password: 'wrong' }",
      "1. HTTP 401\n2. body.error.code === 'AUTH_FAILED'\n3. body.error.remainingAttempts === 4",
      "Playwright API", "tests/auth.spec.js > TC-L03", "高"),
 
     ("TC-P04","POST /api/auth/login - 5回失敗でロック","境界値（API）",
-     "・user001 が有効状態（failed_login_count = 0）",
+     "・user001 が有効状態（ログイン失敗回数がゼロの状態）",
      "1〜4回: POST /api/auth/login（誤PW）→ 401 確認\n"
      "5回目: POST /api/auth/login（誤PW）",
      "5回目:\n1. HTTP 403\n2. body.error.code === 'ACCOUNT_LOCKED'\n3. body.error.lockedUntil が設定される",
@@ -515,16 +515,16 @@ TEST_CASES = [
 ]
 
 ACCOUNT_STATE_TRANSITIONS = [
-    ("有効（active）","連続5回認証失敗","ロック中（locked）","failed_login_count >= 5, locked_until が設定"),
-    ("有効（active）","管理者が手動ロック","ロック中（locked）","locked_until = 9999-12-31（永続）"),
-    ("有効（active）","管理者が無効化","無効（inactive）","is_active = false"),
+    ("有効（active）","連続5回認証失敗","ロック中（locked）","ログイン連続失敗回数が5回に達し、ロック期限が設定される"),
+    ("有効（active）","管理者が手動ロック","ロック中（locked）","ロック期限が永続（9999-12-31）に設定される"),
+    ("有効（active）","管理者が無効化","無効（inactive）","アカウントが無効化される"),
     ("有効（active）","PW未変更から90日経過","PW期限切れ（expired_pw）","次回ログイン時にチェック、状態は有効のまま"),
-    ("ロック中（locked）","30分後（自動）","有効（active）","locked_until が過去になる / failed_login_count = 0"),
-    ("ロック中（locked）","管理者がロック解除","有効（active）","locked_until = NULL, failed_login_count = 0"),
-    ("無効（inactive）","管理者が有効化","有効（active）","is_active = true"),
-    ("PW期限切れ","ユーザーがPW変更","有効（active）","password_changed_at = NOW()"),
-    ("PW期限切れ","管理者がPW変更要求","有効（active）","force_password_change フラグ → 次回ログイン時に変更画面へ"),
-    ("管理者（admin）","管理者PW変更フォームで変更","管理者（admin）","is_admin=true は変化しない。パスワードのみ更新"),
+    ("ロック中（locked）","30分後（自動）","有効（active）","ロック期限が過去になり、失敗回数がリセットされる"),
+    ("ロック中（locked）","管理者がロック解除","有効（active）","ロック期限が解除され、失敗回数がリセットされる"),
+    ("無効（inactive）","管理者が有効化","有効（active）","アカウントが有効化される"),
+    ("PW期限切れ","ユーザーがPW変更","有効（active）","パスワード変更日時が現在時刻に更新される"),
+    ("PW期限切れ","管理者がPW変更要求","有効（active）","次回ログイン時にパスワード変更画面へ誘導される"),
+    ("管理者（admin）","管理者PW変更フォームで変更","管理者（admin）","管理者フラグは変化しない。パスワードのみ更新される"),
 ]
 
 SCREEN_TRANSITIONS = [
