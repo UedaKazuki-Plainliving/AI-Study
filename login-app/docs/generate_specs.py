@@ -503,16 +503,51 @@ ACCOUNT_STATE_TRANSITIONS = [
 ]
 
 SCREEN_TRANSITIONS = [
-    ("ログイン画面","一般ユーザーログイン成功","ホーム画面","HTTP 200 / isAdmin=false"),
-    ("ログイン画面","管理者ログイン成功","管理画面（/admin.html）","HTTP 200 / isAdmin=true → window.location.href"),
-    ("ログイン画面","PW期限切れ（HTTP 422）","PW変更画面","PASSWORD_EXPIRED コード"),
-    ("ログイン画面","認証失敗（HTTP 401）","ログイン画面（エラー表示）","残り試行回数を表示"),
-    ("ログイン画面","アカウントロック（HTTP 403）","ログイン画面（ロックエラー表示）","ロック残り時間を表示"),
+    ("ログイン画面","一般ユーザーログイン成功","ホーム画面","ログイン成功（一般ユーザー）"),
+    ("ログイン画面","管理者ログイン成功","管理画面","ログイン成功（管理者）→ 別ページへ遷移"),
+    ("ログイン画面","パスワード期限切れ","パスワード変更画面","90日以上変更なし → 変更画面へ誘導"),
+    ("ログイン画面","認証失敗","ログイン画面（エラー表示）","残り試行回数を表示"),
+    ("ログイン画面","アカウントロック","ログイン画面（ロックエラー表示）","ロックエラーメッセージを表示"),
     ("ホーム画面","ログアウトボタン押下","ログイン画面","フォームクリア・セッション破棄"),
-    ("PW変更画面","PW変更成功（HTTP 200）","ログイン画面（2秒後）","成功メッセージ → ボタン disabled → 2秒タイマー"),
-    ("PW変更画面","バリデーションエラー","PW変更画面（エラー表示）","API呼び出しなし"),
-    ("管理画面","各ユーザー管理操作","管理画面（一覧更新）","PUT/DELETE 後に loadUsers() 再実行"),
+    ("パスワード変更画面","パスワード変更成功","ログイン画面（2秒後）","成功メッセージ表示 → 2秒後に自動遷移"),
+    ("パスワード変更画面","バリデーションエラー","パスワード変更画面（エラー表示）","画面内でエラー表示"),
+    ("管理画面","ユーザー管理操作","管理画面（一覧更新）","操作後にユーザー一覧を再取得"),
 ]
+
+MERMAID_SCREEN = """\
+```mermaid
+flowchart TD
+    LOGIN["ログイン画面\\nSCR-001"]
+    HOME["ホーム画面\\nSCR-002"]
+    PWCHANGE["パスワード変更画面\\nSCR-003"]
+    ADMIN["管理画面\\nSCR-004"]
+
+    LOGIN -->|一般ユーザーログイン成功| HOME
+    LOGIN -->|管理者ログイン成功| ADMIN
+    LOGIN -->|パスワード期限切れ| PWCHANGE
+    LOGIN -->|認証失敗| LOGIN
+    LOGIN -->|アカウントロック| LOGIN
+    HOME -->|ログアウト| LOGIN
+    PWCHANGE -->|パスワード変更成功（2秒後）| LOGIN
+    PWCHANGE -->|バリデーションエラー| PWCHANGE
+    ADMIN -->|ユーザー管理操作| ADMIN
+```"""
+
+MERMAID_STATE = """\
+```mermaid
+stateDiagram-v2
+    [*] --> 有効
+    有効 --> ロック中 : 連続5回認証失敗
+    有効 --> ロック中 : 管理者が手動ロック
+    有効 --> 無効 : 管理者が無効化
+    有効 --> PW期限切れ : パスワード変更から90日経過
+    ロック中 --> 有効 : 30分後（自動解除）
+    ロック中 --> 有効 : 管理者がロック解除
+    無効 --> 有効 : 管理者が有効化
+    PW期限切れ --> 有効 : ユーザーがパスワード変更
+    PW期限切れ --> 有効 : 管理者がパスワード変更要求
+    管理者 --> 管理者 : 管理者パスワード変更のみ可
+```"""
 
 # ──────────────────────────────────────────────
 # Excel 生成
@@ -557,20 +592,27 @@ def generate_excel():
         ws2.cell(row=2,column=i).font=Font(name="メイリオ",bold=True,color="FFFFFF",size=9)
         ws2.cell(row=2,column=i).border=thin_border()
     ws2.row_dimensions[2].height=20
-    src_colors={"ログイン画面":"DEEBF7","ホーム画面":"E2EFDA","PW変更画面":"FFF2CC","管理画面（/admin.html）":"EDE7F6"}
+    src_colors={"ログイン画面":"DEEBF7","ホーム画面":"E2EFDA","パスワード変更画面":"FFF2CC","管理画面":"EDE7F6"}
     for ri,(src,trig,dst,cond) in enumerate(SCREEN_TRANSITIONS):
         r=ri+3; bg=src_colors.get(src,"FFFFFF")
         for ci,v in enumerate([src,trig,dst,cond],1):
             xl_cell(ws2,r,ci,v,bg=bg if ci<=2 else "FFFFFF")
         ws2.row_dimensions[r].height=28
     for i,w in enumerate([5.0,7.0,7.0,10.0],1): set_w(ws2,i,w)
+    mermaid_row=len(SCREEN_TRANSITIONS)+4
+    ws2.merge_cells(start_row=mermaid_row,start_column=1,end_row=mermaid_row,end_column=4)
+    mc=ws2.cell(row=mermaid_row,column=1,value="【Mermaid 図コード — GitHub / VS Code / Mermaid Live Editor でレンダリング可能】\n"+MERMAID_SCREEN)
+    mc.font=Font(name="Courier New",size=8,color="1F4E79")
+    mc.alignment=Alignment(wrap_text=True,vertical="top")
+    mc.fill=hex_fill("EBF5FB")
+    ws2.row_dimensions[mermaid_row].height=160
 
     # ── シート3: アカウント状態遷移表 ──
     ws3=wb.create_sheet("アカウント状態遷移")
     ws3.sheet_view.showGridLines=False
     ws3.freeze_panes="A3"
     xl_title(ws3,"アカウント状態遷移表 — 社内Webシステム ログイン機能",4)
-    for i,h in enumerate(["遷移前状態","トリガー","遷移後状態","DB変化 / 備考"],1):
+    for i,h in enumerate(["遷移前状態","トリガー","遷移後状態","備考"],1):
         xl_cell(ws3,2,i,h,bold=True,bg="2E75B6",h="center",v="center")
         ws3.cell(row=2,column=i).font=Font(name="メイリオ",bold=True,color="FFFFFF",size=9)
         ws3.cell(row=2,column=i).border=thin_border()
@@ -584,6 +626,13 @@ def generate_excel():
         xl_cell(ws3,r,4,note)
         ws3.row_dimensions[r].height=28
     for i,w in enumerate([5.5,7.0,5.5,11.0],1): set_w(ws3,i,w)
+    mermaid_row2=len(ACCOUNT_STATE_TRANSITIONS)+4
+    ws3.merge_cells(start_row=mermaid_row2,start_column=1,end_row=mermaid_row2,end_column=4)
+    mc2=ws3.cell(row=mermaid_row2,column=1,value="【Mermaid 図コード — GitHub / VS Code / Mermaid Live Editor でレンダリング可能】\n"+MERMAID_STATE)
+    mc2.font=Font(name="Courier New",size=8,color="1F4E79")
+    mc2.alignment=Alignment(wrap_text=True,vertical="top")
+    mc2.fill=hex_fill("EBF5FB")
+    ws3.row_dimensions[mermaid_row2].height=200
 
     # ── シート4: ユーザーストーリー ──
     ws4=wb.create_sheet("ユーザーストーリー")
@@ -719,62 +768,38 @@ def generate_word():
     # ══════════════════════════════
     w_heading(doc,"2. 状態遷移図",1)
 
-    w_heading(doc,"2-1. 画面遷移",2)
+    w_heading(doc,"2-1. 画面遷移図",2)
     w_para(doc,
-        "各画面間の遷移トリガーと条件を示す。SPA のため SCR-001〜003 は同一ページ内の表示切替。"
-        "SCR-004（管理画面）のみ別 HTML ファイルへのリダイレクト。",size=9)
+        "各画面間の遷移トリガーと条件を示す。SCR-001〜003 は同一ページ内の表示切替、"
+        "SCR-004（管理画面）のみ別ページへの遷移。",size=9)
+    w_para(doc,"※ 以下のコードを GitHub / VS Code（Mermaid プレビュー）/ Mermaid Live Editor に貼り付けると図としてレンダリングできます。",
+        size=8,italic=True)
     doc.add_paragraph()
 
-    # 画面遷移テキスト図
     p=doc.add_paragraph()
-    run=p.add_run(
-        "【ログイン画面 SCR-001】\n"
-        "  ├─ 一般ユーザーログイン成功（HTTP 200 / isAdmin=false）─────────────► 【ホーム画面 SCR-002】\n"
-        "  ├─ 管理者ログイン成功（HTTP 200 / isAdmin=true）──────────────────────► 【管理画面 SCR-004 /admin.html】\n"
-        "  ├─ PW期限切れ（HTTP 422 PASSWORD_EXPIRED）────────────────────────────► 【PW変更画面 SCR-003】\n"
-        "  ├─ 認証失敗（HTTP 401 AUTH_FAILED）────────────────────────────────────► 【SCR-001 エラー表示】\n"
-        "  └─ ロック中（HTTP 403 ACCOUNT_LOCKED）─────────────────────────────────► 【SCR-001 ロックエラー表示】\n\n"
-        "【ホーム画面 SCR-002】\n"
-        "  └─ ログアウトボタン押下 ────────────────────────────────────────────────► 【ログイン画面 SCR-001】\n\n"
-        "【PW変更画面 SCR-003】\n"
-        "  ├─ PW変更成功（HTTP 200）→ 成功メッセージ → 2秒後 ─────────────────────► 【ログイン画面 SCR-001】\n"
-        "  └─ バリデーションエラー ─────────────────────────────────────────────────► 【SCR-003 エラー表示】\n\n"
-        "【管理画面 SCR-004】\n"
-        "  └─ 各操作（追加/ロック/削除/PW変更） → GET /api/users で一覧更新 ─────► 【SCR-004 同一画面更新】"
-    )
-    run.font.name="Courier New"; run.font.size=Pt(8)
+    run=p.add_run(MERMAID_SCREEN)
+    run.font.name="Courier New"; run.font.size=Pt(9)
     doc.add_paragraph()
 
-    w_heading(doc,"2-2. アカウント状態遷移",2)
+    w_heading(doc,"2-2. 画面遷移表",2)
+    w_table(doc,["遷移元画面","トリガー","遷移先画面","備考"],
+        SCREEN_TRANSITIONS,
+        [4.0,5.5,4.5,8.5],hdr_bg="2E75B6")
+    doc.add_paragraph()
+
+    w_heading(doc,"2-3. アカウント状態遷移図",2)
     w_para(doc,"ユーザーアカウントが取りうる状態と、状態を変化させるトリガーを示す。",size=9)
+    w_para(doc,"※ 以下のコードを GitHub / VS Code / Mermaid Live Editor に貼り付けると図としてレンダリングできます。",
+        size=8,italic=True)
     doc.add_paragraph()
 
     p2=doc.add_paragraph()
-    run2=p2.add_run(
-        "                       連続5回失敗 / 管理者手動ロック\n"
-        "   ┌──────────────────────────────────────────────────────────────┐\n"
-        "   │                                                              ▼\n"
-        "【有効 active】 ─── 管理者が無効化 ─────────────────────────► 【無効 inactive】\n"
-        "   │  ▲                                                              │\n"
-        "   │  └─────────── 管理者が有効化 ────────────────────────────────────┘\n"
-        "   │\n"
-        "   ├─── PW未変更90日超 ──────► 【PW期限切れ expired_pw】\n"
-        "   │                               │（有効状態は変わらず、次回ログイン時に判定）\n"
-        "   │                               └── PW変更 ──────────────────────► 【有効 active】\n"
-        "   │\n"
-        "   └─────────────────────────► 【ロック中 locked】\n"
-        "                                   │\n"
-        "                                   ├── 30分後（自動）─────────────► 【有効 active】\n"
-        "                                   └── 管理者が解除 ───────────────► 【有効 active】\n\n"
-        "【管理者 admin（is_admin=true）】\n"
-        "   ├── ロック / 無効化 / 削除 操作なし（管理画面から保護）\n"
-        "   └── 管理者PWフォームからパスワードのみ変更可（長さ制限なし）"
-    )
-    run2.font.name="Courier New"; run2.font.size=Pt(8)
+    run2=p2.add_run(MERMAID_STATE)
+    run2.font.name="Courier New"; run2.font.size=Pt(9)
     doc.add_paragraph()
 
-    w_heading(doc,"2-3. 状態遷移表",2)
-    w_table(doc,["遷移前状態","トリガー","遷移後状態","DB変化 / 備考"],
+    w_heading(doc,"2-4. アカウント状態遷移表",2)
+    w_table(doc,["遷移前状態","トリガー","遷移後状態","備考"],
         ACCOUNT_STATE_TRANSITIONS,
         [4.0,5.5,4.5,8.5],hdr_bg="2E75B6")
     doc.add_paragraph()
@@ -784,7 +809,7 @@ def generate_word():
     # ══════════════════════════════
     w_heading(doc,"3. ユーザーストーリー（自動化前提）",1)
     w_para(doc,
-        "各ストーリーは Playwright（E2E / API）または Jest（Unit）で自動化することを前提に Given / When / Then 形式で記述。",
+        "各ストーリーは自動化を前提に Given / When / Then 形式で記述。",
         size=9,italic=True)
     doc.add_paragraph()
 
