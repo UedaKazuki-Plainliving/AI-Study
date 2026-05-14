@@ -1,0 +1,53 @@
+{
+  "system": "Hotel Planisphere",
+  "measuredAt": "2026-05-14",
+  "performance": {
+    "topPage": {
+      "p50": 12,
+      "p95": 2651,
+      "unit": "ms"
+    },
+    "plansList": {
+      "p50": 557,
+      "p95": 867,
+      "unit": "ms"
+    },
+    "reserveForm": {
+      "p50": 559,
+      "p95": 1215,
+      "unit": "ms"
+    }
+  },
+  "usability": {
+    "touchTargetButton": {
+      "measured": 38,
+      "wcagMin": 44,
+      "gap": -6,
+      "unit": "px"
+    },
+    "errorMessageLength": {
+      "usernameEmpty": 17,
+      "passwordTooShort": 15,
+      "unit": "chars"
+    },
+    "requiredFieldMarkers": {
+      "signupHtml": 4,
+      "reserveHtml": 5
+    },
+    "keyboardCompletionRate": 1
+  },
+  "reliability": {
+    "testPassRate": 1,
+    "totalTests": 46,
+    "passedTests": 46
+  },
+  "security": {
+    "authBypassRate": 0,
+    "xssSuccessRate": 0
+  },
+  "functionalCoverage": {
+    "totalScreens": 8,
+    "testedScreens": 7,
+    "coverageRate": 0.88
+  }
+}

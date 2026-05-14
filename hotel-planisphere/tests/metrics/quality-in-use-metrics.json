@@ -1,0 +1,110 @@
+{
+  "measuredAt": "2026-05-14",
+  "personas": [
+    {
+      "personaId": "A",
+      "name": "田中さくら",
+      "age": 28,
+      "device": "mobile-375px",
+      "system": "Hotel Planisphere",
+      "task": "新規登録→プラン選択→予約完了",
+      "effectiveness": {
+        "taskCompleted": true,
+        "completionRate": 100
+      },
+      "efficiency": {
+        "timeOnTask_ms": 1113,
+        "stepCount": 17,
+        "stepsPerMinute": 916.4
+      },
+      "satisfaction": {
+        "errorsEncountered": 0,
+        "errorFreeCompletion": true,
+        "successFeedbackReceived": true
+      },
+      "riskMitigation": {
+        "recoveryFromError": true,
+        "dataPreservedAfterTask": true
+      }
+    },
+    {
+      "personaId": "B",
+      "name": "鈴木健一",
+      "age": 45,
+      "device": "desktop",
+      "system": "Hotel Planisphere",
+      "task": "出張プラン予約（電話番号入力）",
+      "effectiveness": {
+        "taskCompleted": true,
+        "completionRate": 100
+      },
+      "efficiency": {
+        "timeOnTask_ms": 934,
+        "stepCount": 12,
+        "stepsPerMinute": 770.9
+      },
+      "satisfaction": {
+        "errorsEncountered": 0,
+        "errorFreeCompletion": true,
+        "successFeedbackReceived": true
+      },
+      "riskMitigation": {
+        "recoveryFromError": true,
+        "dataPreservedAfterTask": true
+      }
+    },
+    {
+      "personaId": "C",
+      "name": "佐々木恵子",
+      "age": 65,
+      "device": "desktop",
+      "system": "Hotel Planisphere",
+      "task": "アイコン設定（試行錯誤あり）",
+      "effectiveness": {
+        "taskCompleted": true,
+        "completionRate": 100
+      },
+      "efficiency": {
+        "timeOnTask_ms": 519,
+        "stepCount": 8,
+        "stepsPerMinute": 924.9
+      },
+      "satisfaction": {
+        "errorsEncountered": 0,
+        "errorFreeCompletion": true,
+        "successFeedbackReceived": true
+      },
+      "riskMitigation": {
+        "recoveryFromError": true,
+        "dataPreservedAfterTask": true
+      }
+    },
+    {
+      "personaId": "B-LoginApp",
+      "name": "鈴木健一（Login App）",
+      "age": 45,
+      "device": "desktop",
+      "system": "Login App",
+      "task": "ログイン API 呼び出し（正常系）",
+      "effectiveness": {
+        "taskCompleted": true,
+        "completionRate": 100
+      },
+      "efficiency": {
+        "timeOnTask_ms": 372,
+        "stepCount": 2,
+        "stepsPerMinute": 322.6,
+        "loginApiResponseTime_ms": 135
+      },
+      "satisfaction": {
+        "errorsEncountered": 0,
+        "errorFreeCompletion": true,
+        "successFeedbackReceived": true
+      },
+      "riskMitigation": {
+        "recoveryFromError": true,
+        "dataPreservedAfterTask": true
+      }
+    }
+  ]
+}

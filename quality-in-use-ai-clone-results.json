@@ -1,0 +1,1316 @@
+{
+  "measuredAt": "2026-05-14",
+  "standard": "ISO/IEC 25022:2016",
+  "totalPersonas": 7,
+  "personas": [
+    {
+      "personaId": "A",
+      "name": "田中さくら",
+      "age": 28,
+      "occupation": "会社員（マーケティング）",
+      "device": "mobile-375px",
+      "techSkill": 2.5,
+      "system": "Hotel Planisphere",
+      "task": "新規登録→プラン選択→予約完了",
+      "profile": "旅行好きな28歳のOL。スマホを日常的に使い慣れており、ECサイトでの購入経験も豊富。登録フォームへの抵抗は少ないが、ステップが多いと集中が途切れる。",
+      "measuredData": {
+        "completed": true,
+        "timeMs": 1113,
+        "steps": 17,
+        "errors": 0
+      },
+      "responses": [
+        {
+          "questionId": "EF-01",
+          "characteristic": "有効性",
+          "subCharacteristic": "タスク完了率",
+          "question": "タスクを最初から最後まで完了できましたか？",
+          "score": "yes",
+          "comment": "タスクを完了できました。"
+        },
+        {
+          "questionId": "EF-02",
+          "characteristic": "有効性",
+          "subCharacteristic": "目標達成品質",
+          "question": "タスクの全ての目標（情報取得・操作結果）を達成できましたか？（1〜5）",
+          "score": 5,
+          "comment": "全ての目標を完全に達成できました。"
+        },
+        {
+          "questionId": "EF-03",
+          "characteristic": "有効性",
+          "subCharacteristic": "エラー頻度",
+          "question": "予期しないエラーや問題の発生は少なかったですか？（1=多発〜5=全くなし）",
+          "score": 5,
+          "comment": "特に問題なく操作できました。"
+        },
+        {
+          "questionId": "EFF-01",
+          "characteristic": "効率性",
+          "subCharacteristic": "時間効率",
+          "question": "タスク完了にかかった時間は適切でしたか？（1=非常に長い〜5=非常に短い）",
+          "score": 5,
+          "comment": "実測タスク時間: 約1秒。 新規登録が含まれるため少し時間がかかりましたが、許容範囲です。"
+        },
+        {
+          "questionId": "EFF-02",
+          "characteristic": "効率性",
+          "subCharacteristic": "操作効率",
+          "question": "目的達成のための操作ステップ数は適切でしたか？（1=多すぎ〜5=最小限）",
+          "score": 3,
+          "comment": "操作ステップ数: 17。 新規登録→予約の複合タスクとしては妥当ですが、もう少し統合できると嬉しいです。"
+        },
+        {
+          "questionId": "EFF-03",
+          "characteristic": "効率性",
+          "subCharacteristic": "認知負荷",
+          "question": "操作中に迷ったり悩んだりする場面は少なかったですか？（1=多く迷った〜5=全く迷わず）",
+          "score": 3,
+          "comment": "一部の画面で次の操作を迷いましたが、全体的には問題ありませんでした。"
+        },
+        {
+          "questionId": "SA-US-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "実用性",
+          "question": "このシステムはあなたの目的達成に役立ちましたか？（1〜5）",
+          "score": 5,
+          "comment": "スマホから手軽に予約できて、旅行計画が立てやすくなりました。"
+        },
+        {
+          "questionId": "SA-US-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "機能充足性",
+          "question": "システムの機能はあなたのニーズを満たしていましたか？（1〜5）",
+          "score": 4,
+          "comment": "基本的なニーズは満たしていますが、細かい要望はいくつかあります。"
+        },
+        {
+          "questionId": "SA-TR-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "信頼性感覚",
+          "question": "システムが正確かつ信頼できる方法で動作していると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "エラーなく動作しており、信頼できると感じました。"
+        },
+        {
+          "questionId": "SA-TR-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "データ保護感覚",
+          "question": "個人情報やデータが適切に保護されていると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "パスワード入力がマスクされており安心感がありました。"
+        },
+        {
+          "questionId": "SA-PL-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（楽しさ）",
+          "question": "このシステムの使用は楽しかったですか？（1〜5）",
+          "score": 4,
+          "comment": "予約完了の確認モーダルが分かりやすく、達成感がありました。"
+        },
+        {
+          "questionId": "SA-PL-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（デザイン）",
+          "question": "デザイン・視覚的な見た目は魅力的でしたか？（1〜5）",
+          "score": 4,
+          "comment": "ホテルのイメージに合ったデザインで好印象。モバイルでも整って見えました。"
+        },
+        {
+          "questionId": "SA-CO-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（疲労）",
+          "question": "長時間使用しても疲れにくいと感じましたか？（1=非常に疲れる〜5=全く疲れない）",
+          "score": 3,
+          "comment": "スマホでのフォーム入力が多いと指が疲れます。"
+        },
+        {
+          "questionId": "SA-CO-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（可読性）",
+          "question": "文字サイズ・コントラスト・レイアウトは読みやすかったですか？（1〜5）",
+          "score": 3,
+          "comment": "テキストは読みやすいですが、一部ボタンが小さく感じました（WCAG 44px基準に対して38px程度）。"
+        },
+        {
+          "questionId": "FR-EC-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "経済リスク緩和性",
+          "question": "誤操作による不正な請求や経済的損害の心配はありませんでしたか？（1=非常に心配〜5=全く心配なし）",
+          "score": 4,
+          "comment": "予約確認画面で内容確認ができるため、誤予約リスクは低いと感じました。"
+        },
+        {
+          "questionId": "FR-HS-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "健康安全リスク緩和性",
+          "question": "重要なデータが誤操作で失われるリスクは十分に抑えられていましたか？（1〜5）",
+          "score": 4,
+          "comment": "データの保存と確認のフローが明確で、誤操作による損失を防ぎやすかったです。"
+        },
+        {
+          "questionId": "FR-EN-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "環境リスク緩和性",
+          "question": "ネットワーク環境や機器が変わっても影響なく使用できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "スマホでは動作しましたが、Wi-Fi不安定な環境では入力データが失われそうで心配です。"
+        },
+        {
+          "questionId": "CC-CP-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "コンテキスト完全性",
+          "question": "このシステムはあなたの使用シナリオ・ニーズを十分にカバーしていましたか？（1〜5）",
+          "score": 4,
+          "comment": "ホテル予約という目的はカバーされていますが、口コミ・写真ギャラリーがあるとより完全です。"
+        },
+        {
+          "questionId": "CC-FL-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（多様対応）",
+          "question": "異なるデバイス・環境・ユーザー層にも対応できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "PCとスマホで使えますが、一部ボタンがモバイルで操作しにくい（サイズ不足）と感じます。"
+        },
+        {
+          "questionId": "CC-FL-02",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（直感性）",
+          "question": "初めてのユーザーでも説明なしに直感的に操作できると思いますか？（1〜5）",
+          "score": 4,
+          "comment": "基本的な操作は直感的ですが、モバイルネイティブなジェスチャー操作があると更に良いです。"
+        }
+      ],
+      "scores": {
+        "有効性": 5,
+        "効率性": 3.7,
+        "満足性": 3.9,
+        "リスク回避性": 3.7,
+        "コンテキスト網羅性": 3.7,
+        "総合": 4
+      }
+    },
+    {
+      "personaId": "B",
+      "name": "鈴木健一",
+      "age": 45,
+      "occupation": "営業部長",
+      "device": "desktop",
+      "techSkill": 2,
+      "system": "Hotel Planisphere",
+      "task": "出張プラン予約（電話番号入力）",
+      "profile": "出張が多い45歳の営業職。PC操作は仕事上必要だが特別得意ではない。スピード重視で複雑な操作を好まない。",
+      "measuredData": {
+        "completed": true,
+        "timeMs": 934,
+        "steps": 12,
+        "errors": 0
+      },
+      "responses": [
+        {
+          "questionId": "EF-01",
+          "characteristic": "有効性",
+          "subCharacteristic": "タスク完了率",
+          "question": "タスクを最初から最後まで完了できましたか？",
+          "score": "yes",
+          "comment": "タスクを完了できました。"
+        },
+        {
+          "questionId": "EF-02",
+          "characteristic": "有効性",
+          "subCharacteristic": "目標達成品質",
+          "question": "タスクの全ての目標（情報取得・操作結果）を達成できましたか？（1〜5）",
+          "score": 5,
+          "comment": "全ての目標を完全に達成できました。"
+        },
+        {
+          "questionId": "EF-03",
+          "characteristic": "有効性",
+          "subCharacteristic": "エラー頻度",
+          "question": "予期しないエラーや問題の発生は少なかったですか？（1=多発〜5=全くなし）",
+          "score": 5,
+          "comment": "特に問題なく操作できました。"
+        },
+        {
+          "questionId": "EFF-01",
+          "characteristic": "効率性",
+          "subCharacteristic": "時間効率",
+          "question": "タスク完了にかかった時間は適切でしたか？（1=非常に長い〜5=非常に短い）",
+          "score": 5,
+          "comment": "実測タスク時間: 約1秒。 出張プラン予約はスムーズでした。"
+        },
+        {
+          "questionId": "EFF-02",
+          "characteristic": "効率性",
+          "subCharacteristic": "操作効率",
+          "question": "目的達成のための操作ステップ数は適切でしたか？（1=多すぎ〜5=最小限）",
+          "score": 4,
+          "comment": "操作ステップ数: 12。"
+        },
+        {
+          "questionId": "EFF-03",
+          "characteristic": "効率性",
+          "subCharacteristic": "認知負荷",
+          "question": "操作中に迷ったり悩んだりする場面は少なかったですか？（1=多く迷った〜5=全く迷わず）",
+          "score": 3,
+          "comment": "一部の画面で次の操作を迷いましたが、全体的には問題ありませんでした。"
+        },
+        {
+          "questionId": "SA-US-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "実用性",
+          "question": "このシステムはあなたの目的達成に役立ちましたか？（1〜5）",
+          "score": 5,
+          "comment": "出張プランを素早く予約できる機能が業務に役立ちます。"
+        },
+        {
+          "questionId": "SA-US-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "機能充足性",
+          "question": "システムの機能はあなたのニーズを満たしていましたか？（1〜5）",
+          "score": 4,
+          "comment": "基本的なニーズは満たしていますが、細かい要望はいくつかあります。"
+        },
+        {
+          "questionId": "SA-TR-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "信頼性感覚",
+          "question": "システムが正確かつ信頼できる方法で動作していると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "エラーなく動作しており、信頼できると感じました。"
+        },
+        {
+          "questionId": "SA-TR-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "データ保護感覚",
+          "question": "個人情報やデータが適切に保護されていると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "パスワードマスク等の基本的なセキュリティ対策が確認できました。"
+        },
+        {
+          "questionId": "SA-PL-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（楽しさ）",
+          "question": "このシステムの使用は楽しかったですか？（1〜5）",
+          "score": 4,
+          "comment": "機能的で使いやすく、一定の満足感がありました。"
+        },
+        {
+          "questionId": "SA-PL-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（デザイン）",
+          "question": "デザイン・視覚的な見た目は魅力的でしたか？（1〜5）",
+          "score": 3,
+          "comment": "清潔感はありますが、特別印象的なデザインではありませんでした。"
+        },
+        {
+          "questionId": "SA-CO-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（疲労）",
+          "question": "長時間使用しても疲れにくいと感じましたか？（1=非常に疲れる〜5=全く疲れない）",
+          "score": 4,
+          "comment": "特に疲れを感じることなく操作できました。"
+        },
+        {
+          "questionId": "SA-CO-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（可読性）",
+          "question": "文字サイズ・コントラスト・レイアウトは読みやすかったですか？（1〜5）",
+          "score": 4,
+          "comment": "全体的に読みやすいレイアウトでした。"
+        },
+        {
+          "questionId": "FR-EC-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "経済リスク緩和性",
+          "question": "誤操作による不正な請求や経済的損害の心配はありませんでしたか？（1=非常に心配〜5=全く心配なし）",
+          "score": 4,
+          "comment": "予約確認画面で内容確認ができるため、誤予約リスクは低いと感じました。"
+        },
+        {
+          "questionId": "FR-HS-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "健康安全リスク緩和性",
+          "question": "重要なデータが誤操作で失われるリスクは十分に抑えられていましたか？（1〜5）",
+          "score": 4,
+          "comment": "データの保存と確認のフローが明確で、誤操作による損失を防ぎやすかったです。"
+        },
+        {
+          "questionId": "FR-EN-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "環境リスク緩和性",
+          "question": "ネットワーク環境や機器が変わっても影響なく使用できると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "一般的なブラウザ・環境で問題なく動作すると感じました。"
+        },
+        {
+          "questionId": "CC-CP-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "コンテキスト完全性",
+          "question": "このシステムはあなたの使用シナリオ・ニーズを十分にカバーしていましたか？（1〜5）",
+          "score": 4,
+          "comment": "出張用途として必要な機能（電話番号連絡）は揃っていました。領収書PDF出力があると完璧です。"
+        },
+        {
+          "questionId": "CC-FL-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（多様対応）",
+          "question": "異なるデバイス・環境・ユーザー層にも対応できると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "様々な環境で使用できる設計になっていると感じました。"
+        },
+        {
+          "questionId": "CC-FL-02",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（直感性）",
+          "question": "初めてのユーザーでも説明なしに直感的に操作できると思いますか？（1〜5）",
+          "score": 4,
+          "comment": "初めて使う場合でも、画面の流れが自然で迷わずに使えると思います。"
+        }
+      ],
+      "scores": {
+        "有効性": 5,
+        "効率性": 4,
+        "満足性": 4,
+        "リスク回避性": 4,
+        "コンテキスト網羅性": 4,
+        "総合": 4.2
+      }
+    },
+    {
+      "personaId": "C",
+      "name": "佐々木恵子",
+      "age": 65,
+      "occupation": "退職者（元教師）",
+      "device": "desktop",
+      "techSkill": 1.5,
+      "system": "Hotel Planisphere",
+      "task": "アイコン設定（試行錯誤あり）",
+      "profile": "65歳の退職者。PCは使えるが操作に不安を感じやすい。文字が小さいと読みにくく、確認画面や戻る機能があると安心する。",
+      "measuredData": {
+        "completed": true,
+        "timeMs": 519,
+        "steps": 8,
+        "errors": 0
+      },
+      "responses": [
+        {
+          "questionId": "EF-01",
+          "characteristic": "有効性",
+          "subCharacteristic": "タスク完了率",
+          "question": "タスクを最初から最後まで完了できましたか？",
+          "score": "yes",
+          "comment": "タスクを完了できました。"
+        },
+        {
+          "questionId": "EF-02",
+          "characteristic": "有効性",
+          "subCharacteristic": "目標達成品質",
+          "question": "タスクの全ての目標（情報取得・操作結果）を達成できましたか？（1〜5）",
+          "score": 4,
+          "comment": "最終的に完了できましたが、zoom値の設定で一度迷いました。"
+        },
+        {
+          "questionId": "EF-03",
+          "characteristic": "有効性",
+          "subCharacteristic": "エラー頻度",
+          "question": "予期しないエラーや問題の発生は少なかったですか？（1=多発〜5=全くなし）",
+          "score": 4,
+          "comment": "特に問題なく操作できました。"
+        },
+        {
+          "questionId": "EFF-01",
+          "characteristic": "効率性",
+          "subCharacteristic": "時間効率",
+          "question": "タスク完了にかかった時間は適切でしたか？（1=非常に長い〜5=非常に短い）",
+          "score": 5,
+          "comment": "実測タスク時間: 約1秒。 アイコン設定は予想より短時間で完了できました。"
+        },
+        {
+          "questionId": "EFF-02",
+          "characteristic": "効率性",
+          "subCharacteristic": "操作効率",
+          "question": "目的達成のための操作ステップ数は適切でしたか？（1=多すぎ〜5=最小限）",
+          "score": 5,
+          "comment": "操作ステップ数: 8。"
+        },
+        {
+          "questionId": "EFF-03",
+          "characteristic": "効率性",
+          "subCharacteristic": "認知負荷",
+          "question": "操作中に迷ったり悩んだりする場面は少なかったですか？（1=多く迷った〜5=全く迷わず）",
+          "score": 3,
+          "comment": "zoom値の調整など、「これで合っているのかな」と不安になる場面がありました。"
+        },
+        {
+          "questionId": "SA-US-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "実用性",
+          "question": "このシステムはあなたの目的達成に役立ちましたか？（1〜5）",
+          "score": 4,
+          "comment": "プロフィール写真の設定はできましたが、もう少し簡単だと嬉しいです。"
+        },
+        {
+          "questionId": "SA-US-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "機能充足性",
+          "question": "システムの機能はあなたのニーズを満たしていましたか？（1〜5）",
+          "score": 4,
+          "comment": "基本的なニーズは満たしていますが、細かい要望はいくつかあります。"
+        },
+        {
+          "questionId": "SA-TR-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "信頼性感覚",
+          "question": "システムが正確かつ信頼できる方法で動作していると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "「本当に保存されたのかな」と確認したくなる場面がありました。保存完了の案内が欲しいです。"
+        },
+        {
+          "questionId": "SA-TR-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "データ保護感覚",
+          "question": "個人情報やデータが適切に保護されていると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "「個人情報は安全に管理されています」といった案内が表示されると安心です。"
+        },
+        {
+          "questionId": "SA-PL-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（楽しさ）",
+          "question": "このシステムの使用は楽しかったですか？（1〜5）",
+          "score": 4,
+          "comment": "シンプルで余計な要素がなく、落ち着いて使えました。"
+        },
+        {
+          "questionId": "SA-PL-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（デザイン）",
+          "question": "デザイン・視覚的な見た目は魅力的でしたか？（1〜5）",
+          "score": 3,
+          "comment": "清潔感はありますが、特別印象的なデザインではありませんでした。"
+        },
+        {
+          "questionId": "SA-CO-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（疲労）",
+          "question": "長時間使用しても疲れにくいと感じましたか？（1=非常に疲れる〜5=全く疲れない）",
+          "score": 3,
+          "comment": "集中して操作していたため長時間は疲れそうです。文字が小さい部分がありました。"
+        },
+        {
+          "questionId": "SA-CO-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（可読性）",
+          "question": "文字サイズ・コントラスト・レイアウトは読みやすかったですか？（1〜5）",
+          "score": 3,
+          "comment": "フォントサイズが小さく、コントラストも不安な部分がありました。拡大表示が必要でした。"
+        },
+        {
+          "questionId": "FR-EC-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "経済リスク緩和性",
+          "question": "誤操作による不正な請求や経済的損害の心配はありませんでしたか？（1=非常に心配〜5=全く心配なし）",
+          "score": 3,
+          "comment": "確認画面はありましたが、キャンセル方法が明示されていないと不安です。"
+        },
+        {
+          "questionId": "FR-HS-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "健康安全リスク緩和性",
+          "question": "重要なデータが誤操作で失われるリスクは十分に抑えられていましたか？（1〜5）",
+          "score": 4,
+          "comment": "アイコン設定のやり直しができたので、誤操作のリスクは少ないと感じました。"
+        },
+        {
+          "questionId": "FR-EN-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "環境リスク緩和性",
+          "question": "ネットワーク環境や機器が変わっても影響なく使用できると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "一般的なブラウザ・環境で問題なく動作すると感じました。"
+        },
+        {
+          "questionId": "CC-CP-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "コンテキスト完全性",
+          "question": "このシステムはあなたの使用シナリオ・ニーズを十分にカバーしていましたか？（1〜5）",
+          "score": 3,
+          "comment": "プロフィール設定は基本的なものですが、操作説明がもう少し欲しかったです。"
+        },
+        {
+          "questionId": "CC-FL-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（多様対応）",
+          "question": "異なるデバイス・環境・ユーザー層にも対応できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "高齢者向けの文字拡大や音声対応などのアクセシビリティ機能が欲しいです。"
+        },
+        {
+          "questionId": "CC-FL-02",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（直感性）",
+          "question": "初めてのユーザーでも説明なしに直感的に操作できると思いますか？（1〜5）",
+          "score": 3,
+          "comment": "ファイルアップロードやzoom設定は初めてでは分かりにくかったです。チュートリアルがあると良いです。"
+        }
+      ],
+      "scores": {
+        "有効性": 4,
+        "効率性": 4.3,
+        "満足性": 3.4,
+        "リスク回避性": 3.7,
+        "コンテキスト網羅性": 3,
+        "総合": 3.7
+      }
+    },
+    {
+      "personaId": "D",
+      "name": "山田浩二",
+      "age": 35,
+      "occupation": "セキュリティエンジニア",
+      "device": "desktop",
+      "techSkill": 5,
+      "system": "Login App",
+      "task": "セキュリティ機能評価（ロックアウト・セッション管理）",
+      "profile": "セキュリティを専門とする35歳のエンジニア。OWASP Top10、CWE、bcrypt、JWT等を熟知。HTTPヘッダーやCookieフラグを詳細に検証する。",
+      "measuredData": {
+        "completed": true,
+        "timeMs": null,
+        "steps": null,
+        "errors": 0
+      },
+      "responses": [
+        {
+          "questionId": "EF-01",
+          "characteristic": "有効性",
+          "subCharacteristic": "タスク完了率",
+          "question": "タスクを最初から最後まで完了できましたか？",
+          "score": "yes",
+          "comment": "タスクを完了できました。"
+        },
+        {
+          "questionId": "EF-02",
+          "characteristic": "有効性",
+          "subCharacteristic": "目標達成品質",
+          "question": "タスクの全ての目標（情報取得・操作結果）を達成できましたか？（1〜5）",
+          "score": 5,
+          "comment": "全ての目標を完全に達成できました。"
+        },
+        {
+          "questionId": "EF-03",
+          "characteristic": "有効性",
+          "subCharacteristic": "エラー頻度",
+          "question": "予期しないエラーや問題の発生は少なかったですか？（1=多発〜5=全くなし）",
+          "score": 3,
+          "comment": "ロックアウト機能のテストのため意図的に誤認証を試みました。期待通りに動作しました。"
+        },
+        {
+          "questionId": "EFF-01",
+          "characteristic": "効率性",
+          "subCharacteristic": "時間効率",
+          "question": "タスク完了にかかった時間は適切でしたか？（1=非常に長い〜5=非常に短い）",
+          "score": 5,
+          "comment": "APIレスポンスが高速（P50=178ms）で、操作待ち時間のストレスはありません。"
+        },
+        {
+          "questionId": "EFF-02",
+          "characteristic": "効率性",
+          "subCharacteristic": "操作効率",
+          "question": "目的達成のための操作ステップ数は適切でしたか？（1=多すぎ〜5=最小限）",
+          "score": 4,
+          "comment": "APIエンドポイントが整理されており、必要な操作を効率よく実行できました。"
+        },
+        {
+          "questionId": "EFF-03",
+          "characteristic": "効率性",
+          "subCharacteristic": "認知負荷",
+          "question": "操作中に迷ったり悩んだりする場面は少なかったですか？（1=多く迷った〜5=全く迷わず）",
+          "score": 5,
+          "comment": "APIのエンドポイント設計が一貫しており、直感的に使用できました。"
+        },
+        {
+          "questionId": "SA-US-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "実用性",
+          "question": "このシステムはあなたの目的達成に役立ちましたか？（1〜5）",
+          "score": 4,
+          "comment": "認証API・ユーザー管理APIが揃っており、実用的な機能セットです。"
+        },
+        {
+          "questionId": "SA-US-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "機能充足性",
+          "question": "システムの機能はあなたのニーズを満たしていましたか？（1〜5）",
+          "score": 4,
+          "comment": "認証・ユーザー管理の基本機能は揃っています。ロール管理やMFAが欲しいところです。"
+        },
+        {
+          "questionId": "SA-TR-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "信頼性感覚",
+          "question": "システムが正確かつ信頼できる方法で動作していると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "bcrypt(10)のハッシュ化・ロックアウト機能は信頼できます。ただしHTTPS未設定（secure:false）は本番では問題です。"
+        },
+        {
+          "questionId": "SA-TR-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "データ保護感覚",
+          "question": "個人情報やデータが適切に保護されていると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "httpOnly Cookie設定は適切。ただし通信がHTTPのため、本番環境ではHTTPS + secure:true が必須です。"
+        },
+        {
+          "questionId": "SA-PL-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（楽しさ）",
+          "question": "このシステムの使用は楽しかったですか？（1〜5）",
+          "score": 3,
+          "comment": "APIの使用は実用的ですが「楽しい」という感覚は特にありません。"
+        },
+        {
+          "questionId": "SA-PL-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（デザイン）",
+          "question": "デザイン・視覚的な見た目は魅力的でしたか？（1〜5）",
+          "score": 3,
+          "comment": "デザインより機能性を重視するため、可もなく不可もなく。"
+        },
+        {
+          "questionId": "SA-CO-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（疲労）",
+          "question": "長時間使用しても疲れにくいと感じましたか？（1=非常に疲れる〜5=全く疲れない）",
+          "score": 4,
+          "comment": "特に疲れを感じることなく操作できました。"
+        },
+        {
+          "questionId": "SA-CO-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（可読性）",
+          "question": "文字サイズ・コントラスト・レイアウトは読みやすかったですか？（1〜5）",
+          "score": 4,
+          "comment": "全体的に読みやすいレイアウトでした。"
+        },
+        {
+          "questionId": "FR-EC-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "経済リスク緩和性",
+          "question": "誤操作による不正な請求や経済的損害の心配はありませんでしたか？（1=非常に心配〜5=全く心配なし）",
+          "score": 4,
+          "comment": "APIの入力バリデーションが実装されており、誤入力による問題は防げています。"
+        },
+        {
+          "questionId": "FR-HS-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "健康安全リスク緩和性",
+          "question": "重要なデータが誤操作で失われるリスクは十分に抑えられていましたか？（1〜5）",
+          "score": 5,
+          "comment": "bcrypt(10)による適切なパスワードハッシュ化、セッション管理でデータは保護されています。"
+        },
+        {
+          "questionId": "FR-EN-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "環境リスク緩和性",
+          "question": "ネットワーク環境や機器が変わっても影響なく使用できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "HTTPのみの対応は、パブリックWi-Fi環境でのMITM攻撃リスクがあります。HTTPS対応が必要です。"
+        },
+        {
+          "questionId": "CC-CP-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "コンテキスト完全性",
+          "question": "このシステムはあなたの使用シナリオ・ニーズを十分にカバーしていましたか？（1〜5）",
+          "score": 4,
+          "comment": "認証フロー・ユーザー管理・パスワード管理の基本シナリオはカバー。MFA機能があると完全です。"
+        },
+        {
+          "questionId": "CC-FL-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（多様対応）",
+          "question": "異なるデバイス・環境・ユーザー層にも対応できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "APIとして他システムと連携しやすいですが、OpenAPI仕様書があるとより良いです。"
+        },
+        {
+          "questionId": "CC-FL-02",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（直感性）",
+          "question": "初めてのユーザーでも説明なしに直感的に操作できると思いますか？（1〜5）",
+          "score": 5,
+          "comment": "RESTful APIの規約に従った設計で、すぐに使い方が理解できました。"
+        }
+      ],
+      "scores": {
+        "有効性": 4,
+        "効率性": 4.7,
+        "満足性": 3.8,
+        "リスク回避性": 4,
+        "コンテキスト網羅性": 4,
+        "総合": 4.1
+      }
+    },
+    {
+      "personaId": "E",
+      "name": "中村美咲",
+      "age": 21,
+      "occupation": "大学生",
+      "device": "mobile-390px",
+      "techSkill": 3,
+      "system": "Hotel Planisphere",
+      "task": "初めてのホテル予約（プラン探索→予約完了）",
+      "profile": "スマホネイティブ世代の21歳。アプリに慣れているがWebフォームには不慣れ。デザインを重視し、直感的でないUIに強いストレスを感じる。",
+      "measuredData": {
+        "completed": true,
+        "timeMs": null,
+        "steps": null,
+        "errors": 2
+      },
+      "responses": [
+        {
+          "questionId": "EF-01",
+          "characteristic": "有効性",
+          "subCharacteristic": "タスク完了率",
+          "question": "タスクを最初から最後まで完了できましたか？",
+          "score": "yes",
+          "comment": "タスクを完了できました。"
+        },
+        {
+          "questionId": "EF-02",
+          "characteristic": "有効性",
+          "subCharacteristic": "目標達成品質",
+          "question": "タスクの全ての目標（情報取得・操作結果）を達成できましたか？（1〜5）",
+          "score": 4,
+          "comment": "フォームエラーが2回出て焦りましたが、最終的に予約できました。"
+        },
+        {
+          "questionId": "EF-03",
+          "characteristic": "有効性",
+          "subCharacteristic": "エラー頻度",
+          "question": "予期しないエラーや問題の発生は少なかったですか？（1=多発〜5=全くなし）",
+          "score": 3,
+          "comment": "エラーが2件発生しましたが回復できました。"
+        },
+        {
+          "questionId": "EFF-01",
+          "characteristic": "効率性",
+          "subCharacteristic": "時間効率",
+          "question": "タスク完了にかかった時間は適切でしたか？（1=非常に長い〜5=非常に短い）",
+          "score": 4,
+          "comment": "おおむね素早く操作できました。"
+        },
+        {
+          "questionId": "EFF-02",
+          "characteristic": "効率性",
+          "subCharacteristic": "操作効率",
+          "question": "目的達成のための操作ステップ数は適切でしたか？（1=多すぎ〜5=最小限）",
+          "score": 3,
+          "comment": "スマホでのフォーム入力が多く、少し大変でした。"
+        },
+        {
+          "questionId": "EFF-03",
+          "characteristic": "効率性",
+          "subCharacteristic": "認知負荷",
+          "question": "操作中に迷ったり悩んだりする場面は少なかったですか？（1=多く迷った〜5=全く迷わず）",
+          "score": 3,
+          "comment": "エラーメッセージが出た際、次に何をすべきか少し迷いました。"
+        },
+        {
+          "questionId": "SA-US-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "実用性",
+          "question": "このシステムはあなたの目的達成に役立ちましたか？（1〜5）",
+          "score": 4,
+          "comment": "ホテル予約の基本機能はありますが、口コミや写真がもっとあると嬉しいです。"
+        },
+        {
+          "questionId": "SA-US-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "機能充足性",
+          "question": "システムの機能はあなたのニーズを満たしていましたか？（1〜5）",
+          "score": 3,
+          "comment": "基本的な予約機能はありますが、SNS連携や評価機能があると良いです。"
+        },
+        {
+          "questionId": "SA-TR-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "信頼性感覚",
+          "question": "システムが正確かつ信頼できる方法で動作していると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "エラーなく動作しており、信頼できると感じました。"
+        },
+        {
+          "questionId": "SA-TR-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "データ保護感覚",
+          "question": "個人情報やデータが適切に保護されていると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "パスワードマスク等の基本的なセキュリティ対策が確認できました。"
+        },
+        {
+          "questionId": "SA-PL-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（楽しさ）",
+          "question": "このシステムの使用は楽しかったですか？（1〜5）",
+          "score": 3,
+          "comment": "予約完了のフィードバックがもう少し嬉しい演出だと良いです。アニメーションなど欲しいです。"
+        },
+        {
+          "questionId": "SA-PL-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（デザイン）",
+          "question": "デザイン・視覚的な見た目は魅力的でしたか？（1〜5）",
+          "score": 3,
+          "comment": "Bootstrap系デザインで清潔感はありますが、今風のデザインと比べると少し古い印象。"
+        },
+        {
+          "questionId": "SA-CO-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（疲労）",
+          "question": "長時間使用しても疲れにくいと感じましたか？（1=非常に疲れる〜5=全く疲れない）",
+          "score": 3,
+          "comment": "スマホでのフォーム入力が多いと指が疲れます。"
+        },
+        {
+          "questionId": "SA-CO-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（可読性）",
+          "question": "文字サイズ・コントラスト・レイアウトは読みやすかったですか？（1〜5）",
+          "score": 3,
+          "comment": "テキストは読みやすいですが、一部ボタンが小さく感じました（WCAG 44px基準に対して38px程度）。"
+        },
+        {
+          "questionId": "FR-EC-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "経済リスク緩和性",
+          "question": "誤操作による不正な請求や経済的損害の心配はありませんでしたか？（1=非常に心配〜5=全く心配なし）",
+          "score": 4,
+          "comment": "操作のフィードバックが明確で、誤操作を防ぎやすいUIでした。"
+        },
+        {
+          "questionId": "FR-HS-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "健康安全リスク緩和性",
+          "question": "重要なデータが誤操作で失われるリスクは十分に抑えられていましたか？（1〜5）",
+          "score": 4,
+          "comment": "データの保存と確認のフローが明確で、誤操作による損失を防ぎやすかったです。"
+        },
+        {
+          "questionId": "FR-EN-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "環境リスク緩和性",
+          "question": "ネットワーク環境や機器が変わっても影響なく使用できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "スマホでは動作しましたが、Wi-Fi不安定な環境では入力データが失われそうで心配です。"
+        },
+        {
+          "questionId": "CC-CP-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "コンテキスト完全性",
+          "question": "このシステムはあなたの使用シナリオ・ニーズを十分にカバーしていましたか？（1〜5）",
+          "score": 3,
+          "comment": "フィルター検索・比較機能・ユーザーレビューが欲しいです。現状は基本シナリオのみ。"
+        },
+        {
+          "questionId": "CC-FL-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（多様対応）",
+          "question": "異なるデバイス・環境・ユーザー層にも対応できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "PCとスマホで使えますが、一部ボタンがモバイルで操作しにくい（サイズ不足）と感じます。"
+        },
+        {
+          "questionId": "CC-FL-02",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（直感性）",
+          "question": "初めてのユーザーでも説明なしに直感的に操作できると思いますか？（1〜5）",
+          "score": 3,
+          "comment": "若い世代には直感的ですが、フォームエラーのメッセージが少し分かりにくかったです。"
+        }
+      ],
+      "scores": {
+        "有効性": 3.5,
+        "効率性": 3.3,
+        "満足性": 3.3,
+        "リスク回避性": 3.7,
+        "コンテキスト網羅性": 3,
+        "総合": 3.4
+      }
+    },
+    {
+      "personaId": "F",
+      "name": "田村良子",
+      "age": 52,
+      "occupation": "主婦（パート兼業）",
+      "device": "tablet-768px",
+      "techSkill": 1.8,
+      "system": "Hotel Planisphere",
+      "task": "家族旅行プラン予約（複数人数・連絡先入力）",
+      "profile": "52歳の主婦。タブレット主体。シンプルで分かりやすいUIを好む。エラーメッセージが分かりにくいとストレスを感じる。",
+      "measuredData": {
+        "completed": true,
+        "timeMs": null,
+        "steps": null,
+        "errors": 1
+      },
+      "responses": [
+        {
+          "questionId": "EF-01",
+          "characteristic": "有効性",
+          "subCharacteristic": "タスク完了率",
+          "question": "タスクを最初から最後まで完了できましたか？",
+          "score": "yes",
+          "comment": "タスクを完了できました。"
+        },
+        {
+          "questionId": "EF-02",
+          "characteristic": "有効性",
+          "subCharacteristic": "目標達成品質",
+          "question": "タスクの全ての目標（情報取得・操作結果）を達成できましたか？（1〜5）",
+          "score": 4,
+          "comment": "エラーメッセージが出た際、何を直せばよいか少し分かりにくかったです。"
+        },
+        {
+          "questionId": "EF-03",
+          "characteristic": "有効性",
+          "subCharacteristic": "エラー頻度",
+          "question": "予期しないエラーや問題の発生は少なかったですか？（1=多発〜5=全くなし）",
+          "score": 4,
+          "comment": "エラーが1件発生しましたが回復できました。"
+        },
+        {
+          "questionId": "EFF-01",
+          "characteristic": "効率性",
+          "subCharacteristic": "時間効率",
+          "question": "タスク完了にかかった時間は適切でしたか？（1=非常に長い〜5=非常に短い）",
+          "score": 3,
+          "comment": "慣れれば速くなりそうですが、最初は少し時間がかかりました。"
+        },
+        {
+          "questionId": "EFF-02",
+          "characteristic": "効率性",
+          "subCharacteristic": "操作効率",
+          "question": "目的達成のための操作ステップ数は適切でしたか？（1=多すぎ〜5=最小限）",
+          "score": 4,
+          "comment": "必要な操作は適切にまとめられていました。"
+        },
+        {
+          "questionId": "EFF-03",
+          "characteristic": "効率性",
+          "subCharacteristic": "認知負荷",
+          "question": "操作中に迷ったり悩んだりする場面は少なかったですか？（1=多く迷った〜5=全く迷わず）",
+          "score": 3,
+          "comment": "エラー発生時に修正方法が分かりにくく戸惑いました。"
+        },
+        {
+          "questionId": "SA-US-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "実用性",
+          "question": "このシステムはあなたの目的達成に役立ちましたか？（1〜5）",
+          "score": 3,
+          "comment": "家族旅行の計画に使えますが、グループ予約などがあれば更に便利でした。"
+        },
+        {
+          "questionId": "SA-US-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "機能充足性",
+          "question": "システムの機能はあなたのニーズを満たしていましたか？（1〜5）",
+          "score": 3,
+          "comment": "基本予約はできましたが、部屋タイプ指定や人数別料金確認が欲しかったです。"
+        },
+        {
+          "questionId": "SA-TR-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "信頼性感覚",
+          "question": "システムが正確かつ信頼できる方法で動作していると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "エラーなく動作しており、信頼できると感じました。"
+        },
+        {
+          "questionId": "SA-TR-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "データ保護感覚",
+          "question": "個人情報やデータが適切に保護されていると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "パスワードマスク等の基本的なセキュリティ対策が確認できました。"
+        },
+        {
+          "questionId": "SA-PL-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（楽しさ）",
+          "question": "このシステムの使用は楽しかったですか？（1〜5）",
+          "score": 4,
+          "comment": "機能的で使いやすく、一定の満足感がありました。"
+        },
+        {
+          "questionId": "SA-PL-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（デザイン）",
+          "question": "デザイン・視覚的な見た目は魅力的でしたか？（1〜5）",
+          "score": 3,
+          "comment": "清潔感はありますが、特別印象的なデザインではありませんでした。"
+        },
+        {
+          "questionId": "SA-CO-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（疲労）",
+          "question": "長時間使用しても疲れにくいと感じましたか？（1=非常に疲れる〜5=全く疲れない）",
+          "score": 4,
+          "comment": "特に疲れを感じることなく操作できました。"
+        },
+        {
+          "questionId": "SA-CO-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（可読性）",
+          "question": "文字サイズ・コントラスト・レイアウトは読みやすかったですか？（1〜5）",
+          "score": 4,
+          "comment": "全体的に読みやすいレイアウトでした。"
+        },
+        {
+          "questionId": "FR-EC-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "経済リスク緩和性",
+          "question": "誤操作による不正な請求や経済的損害の心配はありませんでしたか？（1=非常に心配〜5=全く心配なし）",
+          "score": 3,
+          "comment": "確認画面はありましたが、キャンセル方法が明示されていないと不安です。"
+        },
+        {
+          "questionId": "FR-HS-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "健康安全リスク緩和性",
+          "question": "重要なデータが誤操作で失われるリスクは十分に抑えられていましたか？（1〜5）",
+          "score": 4,
+          "comment": "データの保存と確認のフローが明確で、誤操作による損失を防ぎやすかったです。"
+        },
+        {
+          "questionId": "FR-EN-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "環境リスク緩和性",
+          "question": "ネットワーク環境や機器が変わっても影響なく使用できると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "一般的なブラウザ・環境で問題なく動作すると感じました。"
+        },
+        {
+          "questionId": "CC-CP-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "コンテキスト完全性",
+          "question": "このシステムはあなたの使用シナリオ・ニーズを十分にカバーしていましたか？（1〜5）",
+          "score": 3,
+          "comment": "基本的な家族旅行の予約はできましたが、部屋タイプ指定やグループ予約がないのが不便でした。"
+        },
+        {
+          "questionId": "CC-FL-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（多様対応）",
+          "question": "異なるデバイス・環境・ユーザー層にも対応できると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "様々な環境で使用できる設計になっていると感じました。"
+        },
+        {
+          "questionId": "CC-FL-02",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（直感性）",
+          "question": "初めてのユーザーでも説明なしに直感的に操作できると思いますか？（1〜5）",
+          "score": 4,
+          "comment": "初めて使う場合でも、画面の流れが自然で迷わずに使えると思います。"
+        }
+      ],
+      "scores": {
+        "有効性": 4,
+        "効率性": 3.3,
+        "満足性": 3.5,
+        "リスク回避性": 3.7,
+        "コンテキスト網羅性": 3.7,
+        "総合": 3.6
+      }
+    },
+    {
+      "personaId": "G",
+      "name": "小林翔",
+      "age": 30,
+      "occupation": "バックエンド開発者",
+      "device": "desktop",
+      "techSkill": 4.5,
+      "system": "Login App",
+      "task": "API統合テスト（CRUD・エラーハンドリング確認）",
+      "profile": "30歳のバックエンド開発者。RESTful API設計・実装を専門とする。エラーレスポンスの一貫性、HTTPステータスコードの適切な使用、APIドキュメントの質を重視。",
+      "measuredData": {
+        "completed": true,
+        "timeMs": null,
+        "steps": null,
+        "errors": 0
+      },
+      "responses": [
+        {
+          "questionId": "EF-01",
+          "characteristic": "有効性",
+          "subCharacteristic": "タスク完了率",
+          "question": "タスクを最初から最後まで完了できましたか？",
+          "score": "yes",
+          "comment": "タスクを完了できました。"
+        },
+        {
+          "questionId": "EF-02",
+          "characteristic": "有効性",
+          "subCharacteristic": "目標達成品質",
+          "question": "タスクの全ての目標（情報取得・操作結果）を達成できましたか？（1〜5）",
+          "score": 5,
+          "comment": "全ての目標を完全に達成できました。"
+        },
+        {
+          "questionId": "EF-03",
+          "characteristic": "有効性",
+          "subCharacteristic": "エラー頻度",
+          "question": "予期しないエラーや問題の発生は少なかったですか？（1=多発〜5=全くなし）",
+          "score": 5,
+          "comment": "特に問題なく操作できました。"
+        },
+        {
+          "questionId": "EFF-01",
+          "characteristic": "効率性",
+          "subCharacteristic": "時間効率",
+          "question": "タスク完了にかかった時間は適切でしたか？（1=非常に長い〜5=非常に短い）",
+          "score": 5,
+          "comment": "APIレスポンスが高速（P50=178ms）で、操作待ち時間のストレスはありません。"
+        },
+        {
+          "questionId": "EFF-02",
+          "characteristic": "効率性",
+          "subCharacteristic": "操作効率",
+          "question": "目的達成のための操作ステップ数は適切でしたか？（1=多すぎ〜5=最小限）",
+          "score": 4,
+          "comment": "APIエンドポイントが整理されており、必要な操作を効率よく実行できました。"
+        },
+        {
+          "questionId": "EFF-03",
+          "characteristic": "効率性",
+          "subCharacteristic": "認知負荷",
+          "question": "操作中に迷ったり悩んだりする場面は少なかったですか？（1=多く迷った〜5=全く迷わず）",
+          "score": 5,
+          "comment": "APIのエンドポイント設計が一貫しており、直感的に使用できました。"
+        },
+        {
+          "questionId": "SA-US-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "実用性",
+          "question": "このシステムはあなたの目的達成に役立ちましたか？（1〜5）",
+          "score": 4,
+          "comment": "RESTful APIとして必要な機能が揃っています。"
+        },
+        {
+          "questionId": "SA-US-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "機能充足性",
+          "question": "システムの機能はあなたのニーズを満たしていましたか？（1〜5）",
+          "score": 3,
+          "comment": "CRUD+Auth APIは揃っていますが、JWT対応・ページネーションがあると良いです。"
+        },
+        {
+          "questionId": "SA-TR-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "信頼性感覚",
+          "question": "システムが正確かつ信頼できる方法で動作していると感じましたか？（1〜5）",
+          "score": 4,
+          "comment": "エラーハンドリングが一貫しており信頼できます。一部バリデーションをより厳格にしてほしいです。"
+        },
+        {
+          "questionId": "SA-TR-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "データ保護感覚",
+          "question": "個人情報やデータが適切に保護されていると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "セッション管理はCookieベースで適切ですが、HTTP環境での使用には懸念があります。"
+        },
+        {
+          "questionId": "SA-PL-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（楽しさ）",
+          "question": "このシステムの使用は楽しかったですか？（1〜5）",
+          "score": 3,
+          "comment": "APIの使用は実用的ですが「楽しい」という感覚は特にありません。"
+        },
+        {
+          "questionId": "SA-PL-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快感性（デザイン）",
+          "question": "デザイン・視覚的な見た目は魅力的でしたか？（1〜5）",
+          "score": 3,
+          "comment": "デザインより機能性を重視するため、可もなく不可もなく。"
+        },
+        {
+          "questionId": "SA-CO-01",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（疲労）",
+          "question": "長時間使用しても疲れにくいと感じましたか？（1=非常に疲れる〜5=全く疲れない）",
+          "score": 4,
+          "comment": "特に疲れを感じることなく操作できました。"
+        },
+        {
+          "questionId": "SA-CO-02",
+          "characteristic": "満足性",
+          "subCharacteristic": "快適性（可読性）",
+          "question": "文字サイズ・コントラスト・レイアウトは読みやすかったですか？（1〜5）",
+          "score": 4,
+          "comment": "全体的に読みやすいレイアウトでした。"
+        },
+        {
+          "questionId": "FR-EC-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "経済リスク緩和性",
+          "question": "誤操作による不正な請求や経済的損害の心配はありませんでしたか？（1=非常に心配〜5=全く心配なし）",
+          "score": 4,
+          "comment": "APIの入力バリデーションが実装されており、誤入力による問題は防げています。"
+        },
+        {
+          "questionId": "FR-HS-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "健康安全リスク緩和性",
+          "question": "重要なデータが誤操作で失われるリスクは十分に抑えられていましたか？（1〜5）",
+          "score": 4,
+          "comment": "ユーザーデータの操作は適切に制御されています。削除確認ダイアログがあると更に良いです。"
+        },
+        {
+          "questionId": "FR-EN-01",
+          "characteristic": "リスク回避性",
+          "subCharacteristic": "環境リスク緩和性",
+          "question": "ネットワーク環境や機器が変わっても影響なく使用できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "HTTP環境のみのため、セキュアな閉域網での使用に限定されます。本番はHTTPS必須。"
+        },
+        {
+          "questionId": "CC-CP-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "コンテキスト完全性",
+          "question": "このシステムはあなたの使用シナリオ・ニーズを十分にカバーしていましたか？（1〜5）",
+          "score": 3,
+          "comment": "CRUD基本操作はカバー。検索・フィルタリング・ページネーションAPIがあると良いです。"
+        },
+        {
+          "questionId": "CC-FL-01",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（多様対応）",
+          "question": "異なるデバイス・環境・ユーザー層にも対応できると感じましたか？（1〜5）",
+          "score": 3,
+          "comment": "APIとして他システムと連携しやすいですが、OpenAPI仕様書があるとより良いです。"
+        },
+        {
+          "questionId": "CC-FL-02",
+          "characteristic": "コンテキスト網羅性",
+          "subCharacteristic": "フレキシビリティ（直感性）",
+          "question": "初めてのユーザーでも説明なしに直感的に操作できると思いますか？（1〜5）",
+          "score": 5,
+          "comment": "RESTful APIの規約に従った設計で、すぐに使い方が理解できました。"
+        }
+      ],
+      "scores": {
+        "有効性": 5,
+        "効率性": 4.7,
+        "満足性": 3.5,
+        "リスク回避性": 3.7,
+        "コンテキスト網羅性": 3.7,
+        "総合": 4.1
+      }
+    }
+  ]
+}

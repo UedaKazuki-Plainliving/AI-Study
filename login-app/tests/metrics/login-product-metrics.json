@@ -1,0 +1,61 @@
+{
+  "system": "Login App",
+  "measuredAt": "2026-05-14",
+  "performance": {
+    "login": {
+      "p50": 178,
+      "p95": 180,
+      "min": 139,
+      "max": 180,
+      "unit": "ms"
+    },
+    "logout": {
+      "p50": 51,
+      "p95": 57,
+      "min": 50,
+      "max": 57,
+      "unit": "ms"
+    },
+    "status": {
+      "p50": 56,
+      "p95": 63,
+      "min": 53,
+      "max": 63,
+      "unit": "ms"
+    },
+    "changePassword": {
+      "p50": 52,
+      "p95": 54,
+      "min": 48,
+      "max": 54,
+      "unit": "ms"
+    }
+  },
+  "security": {
+    "passwordHashing": "bcrypt",
+    "saltRounds": 10,
+    "accountLockThreshold": 5,
+    "lockDurationMinutes": 30,
+    "passwordExpiryDays": 90,
+    "sessionTimeout_hours": 8,
+    "cookieHttpOnly": false,
+    "cookieSecure": false,
+    "passwordMinLength": 8,
+    "passwordComplexityPattern": "^[a-zA-Z0-9!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~]{8,32}$",
+    "sessionFixationProtected": true,
+    "loginHistoryRecorded": true
+  },
+  "reliability": {
+    "testPassRate": 100,
+    "totalTests": 34,
+    "passedTests": 34,
+    "failedTests": 0,
+    "accountLockWorking": true,
+    "passwordExpiryWorking": true
+  },
+  "functionalCoverage": {
+    "totalEndpoints": 8,
+    "testedEndpoints": 8,
+    "coverageRate": 100
+  }
+}
