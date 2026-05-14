@@ -47,6 +47,7 @@
     .badge-inactive{ background: #e2e8f0; color: #718096; }
     .badge-locked  { background: #fed7d7; color: #c53030; }
     .badge-expired { background: #feebc8; color: #c05621; }
+    .badge-admin   { background: #bee3f8; color: #2b6cb0; }
 
     /* ボタン */
     .btn {
@@ -110,6 +111,26 @@
 </div>
 
 <div class="content">
+
+  <!-- 管理者パスワード変更 -->
+  <div class="card">
+    <div class="card-header"><h2>管理者パスワード変更</h2></div>
+    <div class="card-body">
+      <div id="admin-pw-alert-success" class="alert alert-success"></div>
+      <div id="admin-pw-alert-error"   class="alert alert-error"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>新しいパスワード <span style="color:#e53e3e">必須</span></label>
+          <input type="password" id="admin-pw-input" placeholder="新しいパスワード">
+          <span id="err-admin-pw" class="field-error"></span>
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-warning" onclick="changeAdminPassword()">変更する</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ユーザー追加 -->
   <div class="card">
@@ -207,35 +228,36 @@
 
       tbody.innerHTML = users.map(u => {
         const locked = u.locked_until && new Date(u.locked_until) > new Date();
-        const pwExpired = (Date.now() - new Date(u.password_changed_at).getTime()) / (1000 * 60 * 60 * 24) >= 90;
+        const pwExpired = !u.is_admin && (Date.now() - new Date(u.password_changed_at).getTime()) / (1000 * 60 * 60 * 24) >= 90;
 
         let badge;
-        if (!u.is_active)  badge = '<span class="badge badge-inactive">無効</span>';
+        if (u.is_admin)    badge = '<span class="badge badge-admin">管理者</span>';
+        else if (!u.is_active)  badge = '<span class="badge badge-inactive">無効</span>';
         else if (locked)   badge = '<span class="badge badge-locked">ロック中</span>';
         else               badge = '<span class="badge badge-active">有効</span>';
 
         const pwBadge = pwExpired ? '<span class="badge badge-expired">期限切れ</span>' : '';
         const lockInfo = u.locked_until ? `<span style="font-size:11px;color:#c53030">${fmtDate(u.locked_until)}</span>` : '<span style="color:#aaa">—</span>';
 
+        const adminActions = u.is_admin
+          ? `<span style="font-size:11px;color:#718096">上部フォームからPW変更</span>`
+          : `<button class="btn btn-primary btn-sm" onclick="openPwModal('${u.user_id}')">PW変更</button>
+             <button class="btn btn-warning btn-sm" onclick="forcePasswordChange('${u.user_id}')" title="次回ログイン時にパスワード変更を強制">PW変更要求</button>
+             ${locked
+               ? `<button class="btn btn-success btn-sm" onclick="resetLock('${u.user_id}')">ロック解除</button>`
+               : `<button class="btn btn-danger btn-sm" onclick="lockUser('${u.user_id}')">ロックする</button>`}
+             <button class="btn btn-gray btn-sm" onclick="toggleActive('${u.user_id}', ${!u.is_active})">${u.is_active ? '無効化' : '有効化'}</button>
+             <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.user_id}')">削除</button>`;
+
         return `<tr>
           <td><strong>${u.user_id}</strong></td>
           <td>${badge}</td>
           <td style="font-size:12px">${fmtDate(u.password_changed_at)}</td>
-          <td>${pwBadge || '<span style="color:#aaa;font-size:11px">有効</span>'}</td>
+          <td>${pwBadge || '<span style="color:#aaa;font-size:11px">${u.is_admin ? "—" : "有効"}</span>'}</td>
           <td style="text-align:center">${u.failed_login_count}</td>
           <td>${lockInfo}</td>
           <td style="font-size:12px">${fmtDate(u.created_at)}</td>
-          <td>
-            <div style="display:flex;gap:4px;flex-wrap:wrap">
-              <button class="btn btn-primary btn-sm" onclick="openPwModal('${u.user_id}')">PW変更</button>
-              <button class="btn btn-warning btn-sm" onclick="forcePasswordChange('${u.user_id}')" title="次回ログイン時にパスワード変更を強制">PW変更要求</button>
-              ${locked
-                ? `<button class="btn btn-success btn-sm" onclick="resetLock('${u.user_id}')">ロック解除</button>`
-                : `<button class="btn btn-danger btn-sm" onclick="lockUser('${u.user_id}')">ロックする</button>`}
-              <button class="btn btn-gray btn-sm" onclick="toggleActive('${u.user_id}', ${!u.is_active})">${u.is_active ? '無効化' : '有効化'}</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.user_id}')">削除</button>
-            </div>
-          </td>
+          <td><div style="display:flex;gap:4px;flex-wrap:wrap">${adminActions}</div></td>
         </tr>`;
       }).join('');
 
@@ -423,6 +445,29 @@
       loadUsers();
     } catch (err) {
       showFieldError('err-pw-modal', 'エラー: ' + err.message);
+    }
+  }
+
+  // ---- 管理者パスワード変更 ----
+  async function changeAdminPassword() {
+    const password = document.getElementById('admin-pw-input').value;
+    const errEl = document.getElementById('err-admin-pw');
+    if (!password) {
+      errEl.textContent = 'パスワードを入力してください'; errEl.classList.add('visible'); return;
+    }
+    errEl.textContent = ''; errEl.classList.remove('visible');
+    try {
+      const res = await fetch('/api/admin/password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      const json = await res.json();
+      if (json.status !== 'success') throw new Error(json.error?.message);
+      showAlert('admin-pw-alert-success', '✅ 管理者パスワードを変更しました');
+      document.getElementById('admin-pw-input').value = '';
+    } catch (err) {
+      showAlert('admin-pw-alert-error', '❌ ' + err.message);
     }
   }
 

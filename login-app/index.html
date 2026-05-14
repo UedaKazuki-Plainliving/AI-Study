@@ -263,6 +263,10 @@
       const json = await res.json();
 
       if (res.ok) {
+        if (json.data.isAdmin) {
+          window.location.href = '/admin.html';
+          return;
+        }
         document.getElementById('home-username').textContent = json.data.userId + ' さん';
         document.getElementById('login-success-msg').textContent = `ログインしました（${new Date().toLocaleString('ja-JP')}）`;
         showScreen('screen-home');

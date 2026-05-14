@@ -129,8 +129,8 @@ app.post('/api/auth/login', async (req, res) => {
       [userId]
     );
 
-    // パスワード期限チェック
-    if (isPasswordExpired(user.password_changed_at)) {
+    // パスワード期限チェック（管理者はスキップ）
+    if (!user.is_admin && isPasswordExpired(user.password_changed_at)) {
       req.session.userId = userId;
       req.session.requiresPasswordChange = true;
       await logHistory(userId, 'EXPIRED', ip);
@@ -142,11 +142,12 @@ app.post('/api/auth/login', async (req, res) => {
 
     // ログイン成功
     req.session.userId = userId;
+    req.session.isAdmin = !!user.is_admin;
     req.session.requiresPasswordChange = false;
     await logHistory(userId, 'SUCCESS', ip);
     return res.status(200).json({
       status: 'success',
-      data: { userId, expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000) },
+      data: { userId, isAdmin: !!user.is_admin, expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000) },
     });
 
   } catch (err) {
@@ -207,11 +208,33 @@ app.get('/api/auth/status', requireAuth, async (req, res) => {
 // ユーザー管理 API
 // ========================================================
 
+// PUT /api/admin/password — 管理者パスワード変更（長さ制限なし）
+app.put('/api/admin/password', async (req, res) => {
+  const { password } = req.body || {};
+  if (!password) {
+    return res.status(400).json({ status: 'error', error: { code: 'VALIDATION_ERROR', message: 'パスワードを入力してください' } });
+  }
+  try {
+    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+    const result = await pool.query(
+      'UPDATE users SET password_hash = $1, password_changed_at = NOW(), updated_at = NOW() WHERE user_id = $2 AND is_admin = TRUE RETURNING user_id',
+      [hash, 'admin']
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ status: 'error', error: { code: 'NOT_FOUND', message: '管理者ユーザーが見つかりません' } });
+    }
+    return res.status(200).json({ status: 'success', data: { message: '管理者パスワードを変更しました' } });
+  } catch (err) {
+    console.error('[PUT /api/admin/password]', err);
+    return res.status(500).json({ status: 'error', error: { code: 'INTERNAL_ERROR', message: 'サーバーエラーが発生しました' } });
+  }
+});
+
 // GET /api/users
 app.get('/api/users', async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT user_id, password_changed_at, failed_login_count, locked_until, is_active, created_at, updated_at FROM users ORDER BY created_at ASC'
+      'SELECT user_id, password_changed_at, failed_login_count, locked_until, is_active, is_admin, created_at, updated_at FROM users ORDER BY created_at ASC'
     );
     return res.status(200).json({ status: 'success', data: result.rows });
   } catch (err) {

@@ -43,11 +43,16 @@ async function run() {
       failed_login_count  SMALLINT                     NOT NULL DEFAULT 0,
       locked_until        TIMESTAMP WITH TIME ZONE,
       is_active           BOOLEAN                      NOT NULL DEFAULT TRUE,
+      is_admin            BOOLEAN                      NOT NULL DEFAULT FALSE,
       created_at          TIMESTAMP WITH TIME ZONE     NOT NULL DEFAULT NOW(),
       updated_at          TIMESTAMP WITH TIME ZONE     NOT NULL DEFAULT NOW(),
       CONSTRAINT pk_users PRIMARY KEY (user_id),
       CONSTRAINT chk_failed_count CHECK (failed_login_count >= 0)
     )
+  `);
+  // 既存DBへの後付けカラム追加（再実行時に安全）
+  await appClient.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT FALSE
   `);
   console.log('✅ users テーブルを確認/作成しました');
 
@@ -91,6 +96,21 @@ async function run() {
     console.log('✅ 初期ユーザー user001 を作成しました（パスワード: P@ssword）');
   } else {
     console.log('ℹ️  初期ユーザー user001 はすでに存在します');
+  }
+
+  // 管理者ユーザー投入
+  const adminExists = await appClient.query(
+    'SELECT user_id FROM users WHERE user_id = $1', ['admin']
+  );
+  if (adminExists.rows.length === 0) {
+    const adminHash = await bcrypt.hash('root', 10);
+    await appClient.query(
+      'INSERT INTO users (user_id, password_hash, is_admin) VALUES ($1, $2, TRUE)',
+      ['admin', adminHash]
+    );
+    console.log('✅ 管理者ユーザー admin を作成しました（パスワード: root）');
+  } else {
+    console.log('ℹ️  管理者ユーザー admin はすでに存在します');
   }
 
   await appClient.end();
