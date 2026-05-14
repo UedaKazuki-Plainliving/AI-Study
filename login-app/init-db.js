@@ -103,12 +103,12 @@ async function run() {
     'SELECT user_id FROM users WHERE user_id = $1', ['admin']
   );
   if (adminExists.rows.length === 0) {
-    const adminHash = await bcrypt.hash('root', 10);
+    const adminHash = await bcrypt.hash('root1235', 10);
     await appClient.query(
       'INSERT INTO users (user_id, password_hash, is_admin) VALUES ($1, $2, TRUE)',
       ['admin', adminHash]
     );
-    console.log('✅ 管理者ユーザー admin を作成しました（パスワード: root）');
+    console.log('✅ 管理者ユーザー admin を作成しました（パスワード: root1235）');
   } else {
     console.log('ℹ️  管理者ユーザー admin はすでに存在します');
   }
